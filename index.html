@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emily Blair Media — Operations Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0B0E14;color:#D4CDBE;font-family:monospace;min-height:100vh}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:#0B0E14}
+::-webkit-scrollbar-thumb{background:#1E2630;border-radius:2px}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes fadein{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.serif{font-family:'Playfair Display',serif}
+
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px 60px}
+
+/* Header */
+.header{display:flex;align-items:flex-end;justify-content:space-between;padding:28px 0 18px;border-bottom:1px solid #1E2630;margin-bottom:0}
+.header h1{font-family:'Playfair Display',serif;font-size:26px;color:#C9A84C;letter-spacing:.04em;font-weight:700}
+.header-sub{font-size:9px;color:#4A5568;margin-top:4px;letter-spacing:.12em;text-transform:uppercase}
+.clock-wrap{text-align:right}
+#clock{font-family:'Playfair Display',serif;font-size:22px;color:#D4CDBE}
+#dateLbl{font-size:9px;color:#4A5568;margin-top:3px;letter-spacing:.08em}
+
+/* Alerts */
+.alerts{padding:14px 0 0}
+.alert{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:3px;margin-bottom:5px;font-size:10px;letter-spacing:.02em}
+.alert-red{background:rgba(224,91,91,.07);border:1px solid rgba(224,91,91,.22);color:#E05B5B}
+.alert-amber{background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.22);color:#C9A84C}
+.alert-green{background:rgba(78,203,160,.07);border:1px solid rgba(78,203,160,.22);color:#4ECBA0}
+.alert-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.alert-red .alert-dot{background:#E05B5B;animation:pulse 2s infinite}
+.alert-amber .alert-dot{background:#C9A84C;animation:pulse 2.5s infinite}
+.alert-green .alert-dot{background:#4ECBA0;animation:pulse 2s infinite}
+
+/* Controls */
+.controls{display:flex;align-items:center;gap:6px;padding:16px 0 12px;flex-wrap:wrap}
+.pod-btn,.period-btn{padding:4px 10px;font-size:9px;font-family:monospace;border-radius:3px;cursor:pointer;background:none;letter-spacing:.08em;transition:all .15s;text-transform:uppercase}
+.pod-btn{border:1px solid #1E2630;color:#4A5568}
+.pod-btn:hover{opacity:.9}
+.period-btn{border:1px solid #1E2630;color:#4A5568}
+.period-btn.active{background:#1E2630;color:#D4CDBE}
+.ctrl-divider{width:1px;height:16px;background:#1E2630;flex-shrink:0}
+#podInfo{margin-left:auto;font-size:9px;color:#4A5568;letter-spacing:.06em}
+
+/* KPIs */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:18px}
+.kpi{background:#13181F;border:1px solid #1E2630;border-radius:4px;padding:14px 16px;animation:fadein .3s ease}
+.kpi-label{font-size:8px;color:#4A5568;letter-spacing:.12em;text-transform:uppercase;margin-bottom:7px}
+.kpi-value{font-family:'Playfair Display',serif;font-size:28px;line-height:1}
+.kpi-suffix{font-size:13px}
+.kpi-sub{font-size:8px;color:#4A5568;margin-top:5px;letter-spacing:.04em}
+
+/* Tabs */
+.tab-bar{display:flex;border-bottom:1px solid #1E2630;margin-bottom:20px}
+.tab-btn{padding:8px 18px;font-size:10px;font-family:monospace;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;background:none;border:none;border-bottom:2px solid transparent;color:#4A5568;transition:all .15s;margin-bottom:-1px}
+.tab-btn.active{color:#C9A84C;border-bottom-color:#C9A84C}
+.tab-btn:hover:not(.active){color:#D4CDBE}
+
+/* Cards */
+.card{background:#13181F;border:1px solid #1E2630;border-radius:4px;padding:18px 20px}
+.card-title{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#4A5568;margin-bottom:14px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.full-col{margin-top:14px}
+
+/* Client rows */
+.client-section-label{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#4A5568;padding:10px 0 6px;border-bottom:1px solid #1E2630;display:flex;align-items:center;gap:8px}
+.client-row{display:flex;align-items:center;padding:6px 0;border-bottom:1px solid #1E2630;font-size:11px;gap:8px}
+.client-row:last-child{border-bottom:none}
+.client-row.dep{opacity:.7}
+.client-row.departed{opacity:.4}
+.status-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.client-name{flex:1;color:#D4CDBE}
+.client-note{font-size:9px;color:#4A5568}
+.status-badge{font-size:8px;padding:2px 6px;border-radius:2px;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+.pod-badge{font-size:8px;padding:2px 6px;border-radius:2px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+.lead-lbl{font-size:9px;color:#4A5568;white-space:nowrap}
+
+/* Hits / coverage */
+.hit-row{display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #1E2630;gap:10px;font-size:11px}
+.hit-row:last-child{border-bottom:none}
+.hit-client{font-family:'Playfair Display',serif;font-size:11px;color:#C9A84C;min-width:130px;flex-shrink:0}
+.hit-info{flex:1}
+.hit-outlet{color:#D4CDBE}
+.hit-meta{font-size:9px;color:#4A5568;margin-top:2px}
+.live-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:#4ECBA0;animation:pulse 2s infinite;margin-right:5px;vertical-align:middle}
+
+/* Pipeline */
+.opp-section{margin-bottom:14px;border-bottom:1px solid #1E2630;padding-bottom:14px}
+.opp-section:last-child{border-bottom:none;padding-bottom:0;margin-bottom:0}
+.opp-division{font-family:'Playfair Display',serif;font-size:13px;color:#C9A84C;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.opp-lead{font-size:9px;color:#4A5568;letter-spacing:.06em}
+.opp-editors{font-size:9px;color:#4A5568;margin-bottom:8px;line-height:1.6}
+.opp-pitches{display:flex;flex-direction:column;gap:4px}
+.opp-pitch{font-size:10px;color:#D4CDBE;display:flex;gap:6px;line-height:1.5}
+.opp-arrow{color:#4A5568;flex-shrink:0}
+
+/* Overview pod rows */
+.pod-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1E2630;font-size:11px}
+.pod-row:last-child{border-bottom:none}
+.pod-swatch{width:6px;height:6px;border-radius:50%;margin-right:8px;flex-shrink:0}
+.pod-name-wrap{display:flex;align-items:center;flex:1}
+.pod-count{font-family:'Playfair Display',serif;font-size:16px;margin-left:auto}
+.pod-dep{font-size:9px;margin-left:10px;min-width:60px;text-align:right}
+
+/* Section break */
+.section-br{border:none;border-top:1px solid #1E2630;margin:18px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="header">
+  <div>
+    <h1 class="serif">Emily Blair Media</h1>
+    <div class="header-sub">Operations Dashboard &nbsp;·&nbsp; Talent &amp; Brands &nbsp;·&nbsp; Updated May 27, 2026</div>
+  </div>
+  <div class="clock-wrap">
+    <div id="clock" class="serif">--:--</div>
+    <div id="dateLbl">---</div>
+  </div>
+</div>
+
+<div class="alerts">
+  <div class="alert alert-red"><div class="alert-dot"></div><strong>⚠ Cassidy Montalvo</strong> — Final day was 5/25. Officially departed.</div>
+  <div class="alert alert-red"><div class="alert-dot"></div><strong>⚠ Purr Studio / Madison Woolley</strong> — Final day TOMORROW 5/28. Wrap and offboard.</div>
+  <div class="alert alert-amber"><div class="alert-dot"></div><strong>↗ Shoshanna Raven</strong> — Final day 5/29 (in 2 days). Creator pod.</div>
+
+</div>
+
+<div class="controls">
+  <div id="podBar"></div>
+  <div class="ctrl-divider"></div>
+  <button class="period-btn active" onclick="setPeriod('week',this)">This week</button>
+  <button class="period-btn" onclick="setPeriod('month',this)">May 2026</button>
+  <button class="period-btn" onclick="setPeriod('all',this)">All time</button>
+  <span id="podInfo"></span>
+</div>
+
+<div class="kpi-grid" id="kpiGrid"></div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="setTab('overview',this)">Overview</button>
+  <button class="tab-btn" onclick="setTab('coverage',this)">Coverage</button>
+  <button class="tab-btn" onclick="setTab('clients',this)">Clients</button>
+  <button class="tab-btn" onclick="setTab('pipeline',this)">Pipeline</button>
+</div>
+
+<div id="tabContent"></div>
+
+</div>
+
+<script>
+const C={bg:"#0B0E14",surface:"#13181F",border:"#1E2630",gold:"#C9A84C",goldL:"#E8C97A",cream:"#F5EDD6",muted:"#4A5568",text:"#D4CDBE",green:"#4ECBA0",red:"#E05B5B",blue:"#5B9CE0",purple:"#9B8FE0",orange:"#E09B5B",teal:"#5BE0D4",pink:"#E05BA0"};
+
+const POD_C={
+  "Entertainment":C.purple,
+  "Beauty & Fashion":C.pink,
+  "Athlete & Fitness":C.green,
+  "Creator":C.orange,
+  "Brands":C.blue,
+  "Socials":C.teal
+};
+function pc(p){return POD_C[p]||C.gold;}
+
+const TALENT=[
+  {name:"Spill Sesh (Kristi Cook)",pod:"Entertainment",status:"Active",lead:"Julia"},
+  {name:"Kim Gravel",pod:"Entertainment",status:"Active",lead:"Julia"},
+  {name:"Gia Giudice",pod:"Entertainment",status:"Active",lead:"Julia"},
+  {name:"QUICI MEDIA (Cara)",pod:"Entertainment",status:"Active",lead:"Julia"},
+  {name:"Spencer Pratt",pod:"Entertainment",status:"Active",lead:"Julia"},
+  {name:"Kat Velasco",pod:"Entertainment",status:"Active",lead:"Julia"},
+  {name:"Terry Dubrow",pod:"Beauty & Fashion",status:"Active",lead:"Alexis"},
+  {name:"Amanda Frances",pod:"Beauty & Fashion",status:"Active",lead:"Alexis"},
+  {name:"Miranda McKeon",pod:"Beauty & Fashion",status:"Active",lead:"Alexis"},
+  {name:"Melinda Melrose",pod:"Beauty & Fashion",status:"Active",lead:"Alexis"},
+  {name:"Allie Eklund",pod:"Beauty & Fashion",status:"Active",lead:"Alexis"},
+  {name:"Susan Holmes McKagan",pod:"Beauty & Fashion",status:"Departing",note:"Final 7/1",lead:"Alexis"},
+  {name:"Donni Davy",pod:"Beauty & Fashion",status:"Departing",note:"Final 6/12",lead:"Alexis"},
+  {name:"Katie Austin",pod:"Athlete & Fitness",status:"Active",lead:"Sophia"},
+  {name:"Millennial Entertainment",pod:"Athlete & Fitness",status:"Active",lead:"Sophia"},
+  {name:"Carson Roney",pod:"Athlete & Fitness",status:"Active",lead:"Sophia"},
+  {name:"Chase DeMoor",pod:"Athlete & Fitness",status:"Active",lead:"Sophia"},
+  {name:"Aditi Shah",pod:"Athlete & Fitness",status:"Active",lead:"Sophia"},
+  {name:"Kail Lowry",pod:"Athlete & Fitness",status:"Active",lead:"Sophia"},
+  {name:"TJ Palma",pod:"Athlete & Fitness",status:"Active",lead:"Sophia"},
+  {name:"Modeliste Magazine",pod:"Athlete & Fitness",status:"Active",note:"Project",lead:"Sophia"},
+  {name:"Gabby George",pod:"Athlete & Fitness",status:"Active",lead:"Sophia"},
+  {name:"Violet Witchel",pod:"Creator",status:"Active",lead:"Jenna"},
+  {name:"Shelton Wilder",pod:"Creator",status:"Active",lead:"Jenna"},
+  {name:"Sophie Saint Marjan",pod:"Creator",status:"Active",lead:"Jenna"},
+  {name:"Jamie Milne",pod:"Creator",status:"Active",lead:"Jenna"},
+  {name:"G&B Digital Management",pod:"Creator",status:"Active",lead:"Jenna"},
+  {name:"Brittny Button",pod:"Creator",status:"Active",lead:"Jenna"},
+  {name:"Shoshanna Raven",pod:"Creator",status:"Departing",note:"Final 5/29",lead:"Jenna"},
+  {name:"Paige Lindgren",pod:"Creator",status:"Departing",note:"Final 6/3",lead:"Jenna"},
+  {name:"Kai Stone",pod:"Creator",status:"Departing",note:"Final 6/16",lead:"Jenna"},
+  {name:"Cassidy Montalvo",pod:"Creator",status:"Departed",note:"Final was 5/25",lead:"Jenna"},
+];
+
+const BRANDS=[
+  {name:"Dripology",status:"Active",lead:"Lindsey"},
+  {name:"Olivia Ponton",status:"Active",lead:"Lindsey"},
+  {name:"Cameron Rogers",status:"Active",lead:"Lindsey"},
+  {name:"Odd Muse / Aimee Smale",status:"Active",lead:"Lindsey"},
+  {name:"Dolce Glow x Sunnee BAESkin",status:"Active",lead:"Lindsey"},
+  {name:"Shop The Sample",status:"Active",lead:"Lindsey"},
+  {name:"RedHanded",status:"Active",lead:"Lindsey"},
+  {name:"Auri Nutrition",status:"Active",lead:"Lindsey"},
+  {name:"Bell Boy",status:"Active",note:"Embargo 6/1 launch",lead:"Lindsey"},
+  {name:"Regen Therapy (Sanjiv Lal)",status:"Active",lead:"Lindsey"},
+  {name:"Jordan Chiles",status:"Active",note:"Project",lead:"Lindsey"},
+  {name:"Purr Studio / Madison Woolley",status:"Departing",note:"Final TOMORROW 5/28",lead:"Lindsey"},
+  {name:"Westlake Dermatology",status:"Departing",note:"Final 6/18",lead:"Lindsey"},
+  {name:"Osier",status:"Departing",note:"Final 6/11",lead:"Lindsey"},
+];
+
+const SOCIALS=[
+  {name:"Tracey Shindler",status:"Active",lead:"Val"},
+  {name:"Danielle Rose Russell",status:"Active",lead:"Val"},
+];
+
+const HITS=[
+  {date:"2026-05-22",client:"Dolce Glow",outlet:"Entertainment Tonight",div:"Brands",hot:true},
+  {date:"2026-05-22",client:"Anita Yokota",outlet:"House Beautiful",div:"Creator"},
+  {date:"2026-05-22",client:"Anita Yokota",outlet:"Yahoo (HB syndication)",div:"Creator"},
+  {date:"2026-05-22",client:"Anita Yokota",outlet:"NBC California Live (IG)",div:"Creator"},
+  {date:"2026-05-22",client:"Violet Witchel",outlet:"The Roam Report",div:"Creator"},
+  {date:"2026-05-22",client:"Violet Witchel",outlet:"CBS 19 News (syndicated)",div:"Creator"},
+  {date:"2026-05-22",client:"Violet Witchel",outlet:"Baltimore Gluten Free (Facebook)",div:"Creator"},
+  {date:"2026-05-22",client:"Paige Lindgren",outlet:"It Girls Eats Substack",div:"Creator"},
+  {date:"2026-05-22",client:"Paige Lindgren",outlet:"It Girls Eats Instagram",div:"Creator"},
+  {date:"2026-05-22",client:"Paige Lindgren",outlet:"Bustle",div:"Creator"},
+  {date:"2026-05-22",client:"Sophie Saint Marjan",outlet:"Supercar Blondie",div:"Creator"},
+  {date:"2026-05-22",client:"Kai Stone",outlet:"RED w/ Michelle Barone (TikTok ×4)",div:"Creator"},
+  {date:"2026-05-22",client:"Kai Stone",outlet:"RED w/ Michelle Barone (Instagram ×5)",div:"Creator"},
+  {date:"2026-05-22",client:"Kai Stone",outlet:"RED w/ Michelle Barone (iHeart)",div:"Creator"},
+  {date:"2026-05-22",client:"Brittny Button",outlet:"House Beautiful",div:"Creator"},
+  {date:"2026-05-22",client:"Brittny Button",outlet:"Yahoo Shopping (syndicated)",div:"Creator"},
+  {date:"2026-05-22",client:"Brittny Button",outlet:"AOL (syndicated)",div:"Creator"},
+  {date:"2026-05-22",client:"Sunnee BAESkin",outlet:"PureWow (pending confirmation)",div:"Brands"},
+  {date:"2026-05-22",client:"Dolce Glow",outlet:"NewBeauty Summer Issue (pending)",div:"Brands"},
+  // Terry Dubrow — May 2026 (Beauty & Fashion)
+  {date:"2026-05-03",client:"Terry Dubrow",outlet:"Trevor Wallace 'Stiff Socks' (TikTok) — First Plastic in Chest",div:"Beauty & Fashion"},
+  {date:"2026-05-03",client:"Terry Dubrow",outlet:"Trevor Wallace 'Stiff Socks' (Instagram) — First Plastic in Chest",div:"Beauty & Fashion"},
+  {date:"2026-05-03",client:"Terry Dubrow",outlet:"Trevor Wallace 'Stiff Socks' (TikTok) — Why Men Look Weird After Surgery",div:"Beauty & Fashion"},
+  {date:"2026-05-03",client:"Terry Dubrow",outlet:"Trevor Wallace 'Stiff Socks' (Instagram) — Why Men Look Weird",div:"Beauty & Fashion"},
+  {date:"2026-05-05",client:"Terry Dubrow",outlet:"WWD — Inside the 'Barbie Drug' Tanning Trend",div:"Beauty & Fashion",hot:true},
+  {date:"2026-05-06",client:"Terry Dubrow",outlet:"Trevor Wallace 'Stiff Socks' (TikTok) — Bone Smashing",div:"Beauty & Fashion"},
+  {date:"2026-05-06",client:"Terry Dubrow",outlet:"Trevor Wallace 'Stiff Socks' (Instagram) — Bone Smashing",div:"Beauty & Fashion"},
+  {date:"2026-05-06",client:"Terry Dubrow",outlet:"Women.com (via Glam) — Ozempic Hands",div:"Beauty & Fashion"},
+  {date:"2026-05-12",client:"Terry Dubrow",outlet:"Mamamia — Celebrity men are looking... different",div:"Beauty & Fashion"},
+  {date:"2026-05-20",client:"Terry Dubrow",outlet:"Mirror Mirror w/ Amy Chang (YouTube) — When Plastic Surgery Goes Wrong",div:"Beauty & Fashion",hot:true},
+  {date:"2026-05-21",client:"Terry Dubrow",outlet:"Mirror Mirror w/ Amy Chang (Instagram) ×2",div:"Beauty & Fashion"},
+  {date:"2026-05-21",client:"Terry Dubrow",outlet:"Mirror Mirror w/ Amy Chang (TikTok)",div:"Beauty & Fashion"},
+  {date:"2026-05-25",client:"Terry Dubrow",outlet:"Daily Mail — Why Male Celebrities Look Unrecognizable",div:"Beauty & Fashion",hot:true},
+  {date:"2026-05-25",client:"Terry Dubrow",outlet:"MSN (syndicated from Daily Mail)",div:"Beauty & Fashion"},
+  {date:"2026-05-26",client:"Terry Dubrow",outlet:"Trevor Wallace 'Stiff Socks' (Instagram) — Surgery That Isn't Possible",div:"Beauty & Fashion"},
+  {date:"2026-05-27",client:"Terry Dubrow",outlet:"Mirror Mirror w/ Amy Chang (Instagram)",div:"Beauty & Fashion"},
+  // Donni Davy — May 2026 (Beauty & Fashion, departing 6/12)
+  {date:"2026-05-05",client:"Donni Davy",outlet:"The Daily Beast — Introvert With 540K Followers Shares Secret",div:"Beauty & Fashion"},
+  {date:"2026-05-15",client:"Donni Davy",outlet:"The Beauty Ed — Rosalía's Euphoria Makeup",div:"Beauty & Fashion"},
+  {date:"2026-05-15",client:"Donni Davy",outlet:"Harper's Bazaar India — Beauty Psychology of Euphoria",div:"Beauty & Fashion",hot:true},
+  {date:"2026-05-15",client:"Donni Davy",outlet:"Harper's Bazaar India (Print)",div:"Beauty & Fashion"},
+  // Katie Austin — May 2026 (Athlete & Fitness)
+  {date:"2026-05-01",client:"Katie Austin",outlet:"Create & Cultivate — Navigating Pregnancy as a Fitness Founder",div:"Athlete & Fitness"},
+  {date:"2026-05-12",client:"Katie Austin",outlet:"Athlete Tech News — Female Fitness Executives Redefining Strength",div:"Athlete & Fitness"},
+  {date:"2026-05-15",client:"Katie Austin",outlet:"Good Day New York — TV Appearance",div:"Athlete & Fitness",hot:true},
+  {date:"2026-05-19",client:"Katie Austin",outlet:"Tamron Hall Show — TV Appearance",div:"Athlete & Fitness",hot:true},
+  {date:"2026-05-26",client:"Katie Austin",outlet:"PEOPLE — SI Swim Week, 6 Months Pregnant (Exclusive)",div:"Athlete & Fitness",hot:true},
+  // Spencer Pratt — May 2026
+  {date:"2026-05-05",client:"Spencer Pratt",outlet:"The Real Deal — LA Mayor Bid (Online)",div:"Entertainment"},
+  {date:"2026-05-05",client:"Spencer Pratt",outlet:"The Real Deal (Instagram)",div:"Entertainment"},
+  {date:"2026-05-01",client:"Spencer Pratt",outlet:"CBS LA (YouTube)",div:"Entertainment",hot:true},
+  {date:"2026-05-01",client:"Spencer Pratt",outlet:"CBS News — Mayoral Race",div:"Entertainment"},
+  {date:"2026-05-01",client:"Spencer Pratt",outlet:"CBS News — Attack Ad (Digital)",div:"Entertainment"},
+  {date:"2026-05-01",client:"Spencer Pratt",outlet:"CBS News — Attack Ad (Feature)",div:"Entertainment"},
+  {date:"2026-05-01",client:"Spencer Pratt",outlet:"CBS LA YouTube — Attack Ad",div:"Entertainment"},
+  {date:"2026-05-03",client:"Spencer Pratt",outlet:"NBC4/KVEA 52 Mayoral Debate",div:"Entertainment",hot:true},
+  {date:"2026-05-04",client:"Spencer Pratt",outlet:"Ruthless Podcast (Facebook)",div:"Entertainment"},
+  {date:"2026-05-04",client:"Spencer Pratt",outlet:"Ruthless Podcast (Instagram)",div:"Entertainment"},
+  {date:"2026-05-05",client:"Spencer Pratt",outlet:"The Unspeakeasy Podcast",div:"Entertainment"},
+  {date:"2026-05-05",client:"Spencer Pratt",outlet:"The Unspeakeasy (YouTube)",div:"Entertainment"},
+  {date:"2026-05-05",client:"Spencer Pratt",outlet:"The Unspeakeasy (Apple Podcasts)",div:"Entertainment"},
+  {date:"2026-05-05",client:"Spencer Pratt",outlet:"The Unspeakeasy (Twitter/X)",div:"Entertainment"},
+  {date:"2026-05-05",client:"Spencer Pratt",outlet:"Ruthless Podcast (YouTube) — Joins the Progrum",div:"Entertainment"},
+  {date:"2026-05-05",client:"Spencer Pratt",outlet:"Ruthless Podcast (Apple Podcasts)",div:"Entertainment"},
+  {date:"2026-05-05",client:"Spencer Pratt",outlet:"Ruthless Podcast (Audible)",div:"Entertainment"},
+  {date:"2026-05-05",client:"Spencer Pratt",outlet:"Ruthless Podcast (YouTube) — Newest Mayor",div:"Entertainment"},
+  {date:"2026-05-05",client:"Spencer Pratt",outlet:"Ruthless Podcast (Instagram)",div:"Entertainment"},
+  {date:"2026-05-05",client:"Spencer Pratt",outlet:"Ruthless Podcast (X)",div:"Entertainment"},
+  {date:"2026-05-06",client:"Spencer Pratt",outlet:"CBS News National",div:"Entertainment",hot:true},
+  {date:"2026-05-07",client:"Spencer Pratt",outlet:"Adam Carolla Vlog — Malibu RV Tour",div:"Entertainment"},
+  {date:"2026-05-08",client:"Spencer Pratt",outlet:"Off the Cupp w/ S.E. Cupp (Apple Podcasts)",div:"Entertainment"},
+  {date:"2026-05-08",client:"Spencer Pratt",outlet:"Off the Cupp w/ S.E. Cupp (iHeart)",div:"Entertainment"},
+  {date:"2026-05-08",client:"Spencer Pratt",outlet:"Off the Cupp w/ S.E. Cupp (Spotify)",div:"Entertainment"},
+  {date:"2026-05-08",client:"Spencer Pratt",outlet:"Off the Cupp w/ S.E. Cupp (Instagram)",div:"Entertainment"},
+  {date:"2026-05-08",client:"Spencer Pratt",outlet:"All-In Podcast — Wildfires, Homelessness, Corruption",div:"Entertainment",hot:true},
+  {date:"2026-05-10",client:"Spencer Pratt",outlet:"NBCLA Conan Nolan — Broadcast",div:"Entertainment",hot:true},
+  {date:"2026-05-10",client:"Spencer Pratt",outlet:"NBCLA Conan Nolan (YouTube)",div:"Entertainment"},
+  {date:"2026-05-10",client:"Spencer Pratt",outlet:"NBCLA Conan Nolan (X)",div:"Entertainment"},
+  {date:"2026-05-11",client:"Spencer Pratt",outlet:"Dr. Phil (YouTube) — His Mission to Save LA",div:"Entertainment",hot:true},
+  {date:"2026-05-26",client:"Spencer Pratt",outlet:"ABC7 — Homeless/Drug Policy Interview",div:"Entertainment"},
+];
+
+const OPPS={
+  "Beauty & Fashion":{
+    lead:"Alexis Papadopoulos",
+    editors:["Daily Mail","NY Mag (The Strategist)","Forbes ×2","Bustle","Axios","HuffPost","People","WWD","Glamour SA","Good Day LA","Parade ×3"],
+    pitches:[
+      "Susan Holmes McKagan — Velvet Rose Paperback Launch event 5/28",
+      "Miranda McKeon — Redefining Strength & Wellness; Life After Cancer; Post-Chemo Hair Shelf",
+      "Dr. Dubrow — Male cosmetic surgery, undetectable tweaks",
+      "Amanda Frances — RHOBH; Spirituality, Wealth & Modern Womanhood",
+      "Melinda Melrose — 2026 D&G Global Makeup Expert interview",
+      "Allie Eklund — Next Chapter in Fashion & Culture",
+    ]
+  },
+  "Athlete & Fitness":{
+    lead:"Jackson Goldman",
+    editors:["WSJ","Page Six","InTouch ×2","Babylist","Her Campus","OK! Mag","Essentially Sports","Digiday","Forbes (in convo)","Men's Fitness"],
+    pitches:[
+      "Chase DeMoor — Boxing pitch + Celebrity Ex on the Beach press",
+      "Millennial Entertainment — Cannes speaking opps; Creator Economy Expert Comm.",
+      "Kail Lowry — Tour profiles + new series 'Doing the Most'",
+      "Katie Austin — PEOPLE; pregnancy pitch; SI launch NY opps; Good Housekeeping",
+      "Carson Roney — Harvard Women in Business panelist; Creator Economy pitch",
+      "TJ Palma — Airbnb $1M+ rental business; BTV premiere; Barstool It Girl",
+      "Modeliste — Scheduling with Stassi, Claire Holt, Tana (all in convo)",
+      "Gabby George — General, Get in Shape, App pitch",
+    ]
+  },
+  "Creator":{
+    lead:"Jenna Wilen",
+    editors:["NY Times","Bustle","Conde Nast","Good Day NY","The Knot","Playboy","Digiday","Over the Moon","NBC California Live","Stylecaster"],
+    pitches:[
+      "Violet Witchel — NY pop-up press + influencer outreach; Summer pop-up economy",
+      "Sophie Saint Marjan — Automotive, luxury & craftsmanship pitch",
+      "Jamie Milne — Summer mocktails/cocktails; Father's Day follow-ups",
+      "Brittny Button — General features follow-ups",
+      "G&B Digital — Studio launch + follow-ups; death of one-off deal",
+      "Shoshanna Raven — How motherhood shapes ambition (final push before departure)",
+      "Paige Lindgren — Trader Joe's nutritionist angle; LA broadcast follow-ups",
+    ]
+  },
+  "Brands":{
+    lead:"Lindsey LeDoux + Anne Leopard",
+    editors:["NYLON (100 editor-voted beauty)","People","California Post","Biz Journals","Parade ×4","Us Weekly"],
+    pitches:[
+      "Bell Boy — EMBARGO 6/1: Caelynn Bell ventures into fashion with 'Bellboy'",
+      "Dolce Glow — The Glow Behind the Croisette: Takes Cannes; ET placement LIVE",
+      "Sunnee BAESkin — Tan Without the Toxins Memorial Day; Alabama/Texas campus activations",
+      "Odd Muse — Forbes, Over the Moon, Fortune; SOHO House London live talk; Harvard UWiB",
+      "Cameron Rogers — Mental Health Awareness Month: The Journal That Quiets Minds",
+      "Auri Nutrition — Influencers secured: Kat Stickler, Jess O'Neill, Monet Zamora; NewBeauty Awards",
+      "Shop The Sample — Launch event 11 confirmations; gift bags secured: Tarte, Good Girl Snacks",
+      "RedHanded — Why Women Can't Stop Listening to True Crime; podcast guest outreach",
+      "Olivia Ponton — People, Page Six, Variety BB&B exclusive; podcast launch party (Spotify)",
+      "G&B Digital — Mid-tier creator growth opportunity; Biz Journals in convo",
+    ]
+  }
+};
+
+let period='week', currentTab='overview', currentPod='All';
+
+function getHits(){
+  const cut=period==='week'?'2026-05-19':period==='month'?'2026-05-01':'2000-01-01';
+  return HITS.filter(h=>h.date>=cut&&(currentPod==='All'||h.div===currentPod||h.div.includes(currentPod)));
+}
+function periodLabel(){return period==='week'?'May 19–27':period==='month'?'May 2026':'All Time';}
+
+function setPeriod(p,el){
+  period=p;
+  document.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+function setTab(t,el){
+  currentTab=t;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+function setPod(p){currentPod=p;render();}
+
+function statusDotColor(s){return s==='Active'?C.green:s==='Departing'?C.orange:C.muted;}
+function statusBadgeStyle(s){
+  if(s==='Active')return`background:rgba(78,203,160,.1);color:#4ECBA0;border:1px solid rgba(78,203,160,.2)`;
+  if(s==='Departing')return`background:rgba(224,155,91,.1);color:#E09B5B;border:1px solid rgba(224,155,91,.2)`;
+  return`background:rgba(74,85,104,.15);color:#4A5568;border:1px solid rgba(74,85,104,.2)`;
+}
+
+function podBadgeStyle(pod){
+  const col=pc(pod);
+  return`background:${col}18;color:${col};border:1px solid ${col}33`;
+}
+
+function renderPodBar(){
+  const pods=['All','Entertainment','Beauty & Fashion','Athlete & Fitness','Creator','Brands'];
+  const pb=pods.map(p=>{
+    const col=pc(p),active=currentPod===p;
+    return`<button class="pod-btn" onclick="setPod('${p}')" style="background:${active?col+'20':'none'};border-color:${active?col:'#1E2630'};color:${active?col:'#4A5568'}">${p}</button>`;
+  }).join('');
+  document.getElementById('podBar').innerHTML=pb;
+  document.getElementById('podInfo').textContent=`Showing: ${periodLabel()}${currentPod!=='All'?' · '+currentPod:''}`;
+}
+
+function renderKPIs(){
+  const hits=getHits();
+  const isBrands=currentPod==='Brands';
+  const isTalent=currentPod!=='All'&&currentPod!=='Brands';
+  const talFilter=c=>currentPod==='All'||isBrands||c.pod===currentPod;
+  const tActive=TALENT.filter(c=>c.status==='Active'&&talFilter(c)).length;
+  const tDep=TALENT.filter(c=>c.status==='Departing'&&talFilter(c)).length;
+  const bActive=BRANDS.filter(c=>c.status==='Active').length;
+  const bDep=BRANDS.filter(c=>c.status==='Departing').length;
+  const urgent=TALENT.filter(c=>c.status==='Departing'&&c.note&&(c.note.includes('5/28')||c.note.includes('5/29'))).length+BRANDS.filter(c=>c.status==='Departing'&&c.note&&(c.note.includes('5/28')||c.note.includes('5/29'))).length;
+
+  const kpis=isBrands?[
+    {label:'Brands — Active',value:bActive,sub:'current active clients',color:C.blue},
+    {label:'Brands — Departing',value:bDep,sub:'departing within 60 days',color:C.red},
+    {label:'Hits — '+periodLabel(),value:hits.length,sub:'confirmed press placements',color:C.green},
+    {label:'Urgent Offboards',value:urgent,sub:'next 48 hours',color:C.orange},
+  ]:isTalent?[
+    {label:currentPod+' — Active',value:tActive,sub:'active clients in pod',color:pc(currentPod)},
+    {label:currentPod+' — Departing',value:tDep,sub:'leaving within 60 days',color:C.red},
+    {label:'Hits — '+periodLabel(),value:hits.length,sub:'confirmed press placements',color:C.green},
+    {label:'Urgent Offboards',value:urgent,sub:'next 48 hours',color:C.orange},
+  ]:[
+    {label:'Active Talent Clients',value:tActive,sub:'+'+tDep+' departing soon',color:C.gold},
+    {label:'Active Brands Clients',value:bActive,sub:'+'+bDep+' departing soon',color:C.blue},
+    {label:'Hits — '+periodLabel(),value:hits.length,sub:'confirmed press placements',color:C.green},
+    {label:'Urgent Offboards',value:urgent,sub:'within 48 hrs',color:C.red},
+    {label:'Open Opps Pitches',value:Object.values(OPPS).reduce((s,o)=>s+o.pitches.length,0),sub:'across all divisions',color:C.purple},
+  ];
+
+  document.getElementById('kpiGrid').innerHTML=kpis.map(k=>`
+    <div class="kpi">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value serif" style="color:${k.color}">${k.value}${k.suffix?`<span class="kpi-suffix">${k.suffix}</span>`:''}</div>
+      <div class="kpi-sub">${k.sub||''}</div>
+    </div>`).join('');
+}
+
+function clientRowHTML(c,showPod){
+  const sc=c.status.toLowerCase().replace(' ','');
+  return`<div class="client-row${c.status==='Departing'?' dep':''}${c.status==='Departed'?' departed':''}">
+    <div class="status-dot" style="background:${statusDotColor(c.status)}"></div>
+    <div class="client-name">${c.name}${c.note?`<span class="client-note"> — ${c.note}</span>`:''}</div>
+    ${showPod&&c.pod?`<div class="pod-badge" style="${podBadgeStyle(c.pod)}">${c.pod}</div>`:''}
+    <div class="lead-lbl">${c.lead||''}</div>
+    <div class="status-badge" style="${statusBadgeStyle(c.status)}">${c.status}</div>
+  </div>`;
+}
+
+function renderOverview(){
+  const pods=['Entertainment','Beauty & Fashion','Athlete & Fitness','Creator'];
+  const podSummary=pods.map(p=>{
+    const active=TALENT.filter(c=>c.pod===p&&c.status==='Active').length;
+    const dep=TALENT.filter(c=>c.pod===p&&c.status==='Departing').length;
+    const departed=TALENT.filter(c=>c.pod===p&&c.status==='Departed').length;
+    const lead={Entertainment:'Julia Matina','Beauty & Fashion':'Alexis Papadopoulos','Athlete & Fitness':'Sophia Ribner',Creator:'Jenna Wilen'}[p];
+    return`<div class="pod-row">
+      <div class="pod-swatch" style="background:${pc(p)}"></div>
+      <div class="pod-name-wrap" style="flex:1">
+        <span style="color:${pc(p)};font-size:11px">${p}</span>
+        <span class="lead-lbl" style="margin-left:8px">${lead}</span>
+      </div>
+      <div class="pod-count serif" style="color:${pc(p)}">${active}</div>
+      ${dep?`<div class="pod-dep" style="color:${C.orange}">${dep} departing</div>`:departed?`<div class="pod-dep" style="color:${C.muted}">${departed} departed</div>`:`<div class="pod-dep" style="color:${C.muted}">—</div>`}
+    </div>`;
+  }).join('');
+
+  const bActive=BRANDS.filter(c=>c.status==='Active').length;
+  const bDep=BRANDS.filter(c=>c.status==='Departing').length;
+  const brandSummary=`<div class="pod-row">
+    <div class="pod-swatch" style="background:${C.blue}"></div>
+    <div class="pod-name-wrap" style="flex:1">
+      <span style="color:${C.blue};font-size:11px">Brands Division</span>
+      <span class="lead-lbl" style="margin-left:8px">Lindsey LeDoux + Anne Leopard</span>
+    </div>
+    <div class="pod-count serif" style="color:${C.blue}">${bActive}</div>
+    ${bDep?`<div class="pod-dep" style="color:${C.orange}">${bDep} departing</div>`:`<div class="pod-dep" style="color:${C.muted}">—</div>`}
+  </div>
+  <div class="pod-row">
+    <div class="pod-swatch" style="background:${C.teal}"></div>
+    <div class="pod-name-wrap" style="flex:1">
+      <span style="color:${C.teal};font-size:11px">Socials</span>
+      <span class="lead-lbl" style="margin-left:8px">Val (Valeria Flores)</span>
+    </div>
+    <div class="pod-count serif" style="color:${C.teal}">2</div>
+    <div class="pod-dep" style="color:${C.muted}">—</div>
+  </div>`;
+
+  const recentHits=HITS.filter(h=>h.date>='2026-05-19').slice(0,8);
+  const hitRows=recentHits.map(h=>`
+    <div class="hit-row">
+      ${h.hot?`<span class="live-dot"></span>`:''}
+      <div class="hit-client serif">${h.client}</div>
+      <div class="hit-info">
+        <div class="hit-outlet">${h.outlet}</div>
+        <div class="hit-meta">${h.div} · ${h.date}</div>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('tabContent').innerHTML=`
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">Pod Breakdown — Active Clients</div>
+        ${podSummary}
+        <div style="height:12px"></div>
+        ${brandSummary}
+      </div>
+      <div class="card">
+        <div class="card-title">Live Press — This Week</div>
+        ${hitRows}
+        ${HITS.length>8?`<div style="font-size:9px;color:#4A5568;margin-top:10px;text-align:center">↓ See Coverage tab for all ${HITS.length} placements</div>`:''}
+      </div>
+    </div>`;
+}
+
+function renderCoverage(){
+  const cut=period==='week'?'2026-05-19':period==='month'?'2026-05-01':'2000-01-01';
+  const divFilter=HITS.filter(h=>h.date>=cut);
+  const rows=divFilter.map(h=>`
+    <div class="hit-row">
+      ${h.hot?`<span class="live-dot"></span>`:'<span style="width:5px;height:5px;display:inline-block;border-radius:50%;background:#1E2630;margin-right:5px;flex-shrink:0"></span>'}
+      <div class="hit-client serif">${h.client}</div>
+      <div class="hit-info">
+        <div class="hit-outlet">${h.outlet}</div>
+        <div class="hit-meta">${h.div} · ${h.date}</div>
+      </div>
+      <div class="pod-badge" style="${podBadgeStyle(h.div)}">${h.div}</div>
+    </div>`).join('');
+
+  document.getElementById('tabContent').innerHTML=`
+    <div class="card">
+      <div class="card-title">Press placements — ${periodLabel()}${currentPod!=='All'?' · '+currentPod:''} <span style="color:${C.gold};margin-left:8px">${divFilter.length} total</span></div>
+      ${rows||`<div style="font-size:11px;color:#4A5568;padding:16px 0;text-align:center">No hits for this filter</div>`}
+    </div>`;
+}
+
+function renderClients(){
+  const pods=['Entertainment','Beauty & Fashion','Athlete & Fitness','Creator'];
+  let html='';
+
+  if(currentPod==='All'||currentPod!=='Brands'){
+    pods.filter(p=>currentPod==='All'||p===currentPod).forEach(p=>{
+      const clients=TALENT.filter(c=>c.pod===p);
+      const col=pc(p);
+      html+=`<div class="client-section-label" style="border-color:${col}33;margin-top:16px">
+        <span style="width:5px;height:5px;border-radius:50%;background:${col};display:inline-block"></span>
+        <span style="color:${col}">${p}</span>
+        <span style="color:#4A5568;font-size:8px;margin-left:4px">${clients.filter(c=>c.status==='Active').length} active${clients.filter(c=>c.status==='Departing').length?' · '+clients.filter(c=>c.status==='Departing').length+' departing':''}</span>
+      </div>`;
+      html+=clients.map(c=>clientRowHTML(c,false)).join('');
+    });
+  }
+
+  if(currentPod==='All'||currentPod==='Brands'){
+    html+=`<div class="client-section-label" style="border-color:${C.blue}33;margin-top:20px">
+      <span style="width:5px;height:5px;border-radius:50%;background:${C.blue};display:inline-block"></span>
+      <span style="color:${C.blue}">Brands Division</span>
+      <span style="color:#4A5568;font-size:8px;margin-left:4px">${BRANDS.filter(c=>c.status==='Active').length} active · ${BRANDS.filter(c=>c.status==='Departing').length} departing</span>
+    </div>`;
+    html+=BRANDS.map(c=>clientRowHTML(c,false)).join('');
+    html+=`<div class="client-section-label" style="border-color:${C.teal}33;margin-top:20px">
+      <span style="width:5px;height:5px;border-radius:50%;background:${C.teal};display:inline-block"></span>
+      <span style="color:${C.teal}">Socials</span>
+    </div>`;
+    html+=SOCIALS.map(c=>clientRowHTML(c,false)).join('');
+  }
+
+  document.getElementById('tabContent').innerHTML=`<div class="card">${html}</div>`;
+}
+
+function renderPipeline(){
+  const divs=Object.keys(OPPS);
+  const sections=divs.map(d=>{
+    const o=OPPS[d];
+    const pitches=o.pitches.map(p=>`<div class="opp-pitch"><span class="opp-arrow">›</span>${p}</div>`).join('');
+    return`<div class="opp-section">
+      <div class="opp-division serif">${d} <span style="font-size:9px;color:#4A5568;font-family:monospace;font-style:normal">${o.pitches.length} pitches active</span></div>
+      <div class="opp-lead">Lead: ${o.lead}</div>
+      <div class="opp-editors" style="margin-top:6px"><span style="color:#4A5568">Speaking with:</span> ${o.editors.join(' · ')}</div>
+      <div class="opp-pitches">${pitches}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('tabContent').innerHTML=`<div class="card"><div class="card-title">Open Opportunities — Week of May 22, 2026</div>${sections}</div>`;
+}
+
+function render(){
+  renderPodBar();
+  renderKPIs();
+  if(currentTab==='overview')renderOverview();
+  else if(currentTab==='coverage')renderCoverage();
+  else if(currentTab==='clients')renderClients();
+  else if(currentTab==='pipeline')renderPipeline();
+}
+
+function updateClock(){
+  const now=new Date();
+  document.getElementById('clock').textContent=now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('dateLbl').textContent=now.toLocaleDateString([],{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+}
+setInterval(updateClock,1000);
+updateClock();
+render();
+</script>
+</body>
+</html>
