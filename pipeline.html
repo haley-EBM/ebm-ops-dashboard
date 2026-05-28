@@ -3,571 +3,320 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Emily Blair Media — Business Development</title>
+<title>EBM Pipeline Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:#0B0E14;color:#D4CDBE;font-family:monospace;min-height:100vh}
-::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:#0B0E14}::-webkit-scrollbar-thumb{background:#1E2630;border-radius:2px}
-.serif{font-family:Georgia,serif}
-.header{background:#13181F;border-bottom:1px solid #1E2630;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
-.logo{width:28px;height:28px;background:#C9A84C;border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-weight:700;color:#0B0E14;font-size:13px;flex-shrink:0}
-.tabs{display:flex;gap:16px}
-.tab-btn{background:none;border:none;border-bottom:1px solid transparent;cursor:pointer;padding:4px 0;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:#4A5568;font-family:monospace}
-.tab-btn.active{color:#C9A84C;border-bottom-color:#C9A84C}
-.filter-bar{background:rgba(19,24,31,0.95);border-bottom:1px solid #1E2630;padding:7px 24px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.filter-btn{background:none;border:1px solid #1E2630;border-radius:4px;cursor:pointer;padding:3px 10px;font-size:9px;letter-spacing:0.08em;color:#4A5568;text-transform:uppercase;font-family:monospace;transition:all 0.15s}
-.content{padding:20px 24px}
-.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:20px}
-.kpi{background:#13181F;border:1px solid #1E2630;border-radius:8px;padding:14px 16px;position:relative;overflow:hidden}
-.kpi-bar{position:absolute;top:0;left:0;right:0;height:2px}
-.kpi-label{font-size:9px;color:#4A5568;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px}
-.kpi-value{font-size:26px;color:#F5EDD6;line-height:1;margin-bottom:3px}
-.kpi-sub{font-size:9px;color:#4A5568}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px}
-.card{background:#13181F;border:1px solid #1E2630;border-radius:8px;padding:18px}
-.card-label{font-size:9px;color:#4A5568;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px}
-.card-title{font-size:18px;color:#F5EDD6;margin-bottom:14px}
-.row{padding:9px 11px;background:#0B0E14;border-radius:5px;margin-bottom:6px}
-.row-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:3px}
-.name{font-size:12px;color:#F5EDD6}
-.cat-tag{font-size:8px;padding:1px 6px;border-radius:3px;letter-spacing:0.06em;text-transform:uppercase}
-.status-tag{font-size:8px;padding:2px 7px;border-radius:10px;letter-spacing:0.05em}
-.row-meta{font-size:9px;color:#4A5568}
-.scroll{max-height:520px;overflow-y:auto}
-.funnel-bar{height:28px;border-radius:4px;display:flex;align-items:center;padding:0 10px;margin-bottom:6px;cursor:pointer;transition:opacity 0.15s}
-.funnel-bar:hover{opacity:0.85}
-.funnel-label{font-size:10px;font-weight:bold;flex:1}
-.funnel-count{font-size:16px;font-family:Georgia,serif}
-.funnel-pct{font-size:9px;opacity:0.7;margin-left:6px}
-.cold-row{padding:8px 11px;background:#0B0E14;border-radius:5px;margin-bottom:5px;display:flex;justify-content:space-between;align-items:center}
-.section-header{font-size:10px;color:#4A5568;letter-spacing:0.1em;text-transform:uppercase;margin:12px 0 6px;padding-bottom:4px;border-bottom:1px solid #1E2630}
+:root {
+  --bg: #0a0a0c; --surface: #111115; --surface2: #1a1a20; --surface3: #22222a;
+  --border: #2a2a35; --text: #e8e8f0; --muted: #6b6b80; --accent: #c8a96e;
+  --red: #e05555; --green: #4caf82; --yellow: #e0a84a; --blue: #5599dd; --purple: #9b72cf;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; }
+
+header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 24px; border-bottom: 1px solid var(--border); background: var(--surface);
+}
+.back-link { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 6px; cursor: pointer; }
+.back-link:hover { color: var(--text); }
+.logo-text { font-weight: 600; font-size: 15px; }
+.logo-sub { font-size: 11px; color: var(--muted); }
+
+.tabs { display: flex; background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; }
+.tab { padding: 12px 16px; font-size: 13px; font-weight: 500; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; transition: all 0.15s; }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+.content { padding: 20px 24px; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
+.kpi-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; }
+.kpi-value { font-size: 22px; font-weight: 700; font-family: 'DM Mono', monospace; }
+
+.funnel-row { display: flex; gap: 12px; margin-bottom: 20px; }
+.funnel-stage {
+  flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 14px; text-align: center;
+}
+.funnel-stage-name { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; }
+.funnel-stage-num { font-size: 28px; font-weight: 700; font-family: 'DM Mono', monospace; }
+.funnel-arrow { color: var(--muted); font-size: 18px; display: flex; align-items: center; }
+.funnel-pct { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+.section-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 16px; }
+.card-header { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.card-title { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.card-count { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+.pipeline-table { width: 100%; border-collapse: collapse; }
+.pipeline-table th { text-align: left; padding: 8px 12px; font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid var(--border); background: var(--surface2); }
+.pipeline-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); font-size: 12px; }
+.pipeline-table tr:last-child td { border-bottom: none; }
+.pipeline-table tr:hover td { background: var(--surface2); }
+.status-badge { font-size: 10px; padding: 2px 7px; border-radius: 3px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+.s-prospect { background: rgba(85,153,221,0.12); color: var(--blue); border: 1px solid rgba(85,153,221,0.3); }
+.s-intro { background: rgba(200,169,110,0.12); color: var(--accent); border: 1px solid rgba(200,169,110,0.3); }
+.s-proposal { background: rgba(155,114,207,0.12); color: var(--purple); border: 1px solid rgba(155,114,207,0.3); }
+.s-negotiating { background: rgba(224,168,74,0.12); color: var(--yellow); border: 1px solid rgba(224,168,74,0.3); }
+.s-signed { background: rgba(76,175,130,0.12); color: var(--green); border: 1px solid rgba(76,175,130,0.3); }
+.s-passed { background: rgba(224,85,85,0.12); color: var(--red); border: 1px solid rgba(224,85,85,0.3); }
+.s-cold { background: rgba(107,107,128,0.12); color: var(--muted); border: 1px solid var(--border); }
+.scrollable { max-height: 480px; overflow-y: auto; }
+.scrollable::-webkit-scrollbar { width: 4px; }
+.scrollable::-webkit-scrollbar-track { background: var(--surface); }
+.scrollable::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.money { font-family: 'DM Mono', monospace; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 800px) { .grid-2 { grid-template-columns: 1fr; } .funnel-row { flex-direction: column; } .funnel-arrow { transform: rotate(90deg); display: none; } }
+.tag-team { font-size: 10px; padding: 1px 5px; border-radius: 3px; color: var(--muted); background: var(--surface3); }
 </style>
 </head>
 <body>
-
-<div class="header">
-  <div style="display:flex;align-items:center;gap:10px">
-    <div class="logo">E</div>
-    <div>
-      <div class="serif" style="font-size:13px;color:#F5EDD6;font-weight:700">Emily Blair Media</div>
-      <div style="font-size:9px;color:#4A5568;letter-spacing:0.1em;text-transform:uppercase">Biz Dev &middot; Nicole Pila &amp; Anne Leopard</div>
+<header>
+  <div>
+    <a href="index.html" class="back-link">← Back to Ops Dashboard</a>
+    <div style="margin-top:4px">
+      <div class="logo-text">EBM Pipeline Dashboard</div>
+      <div class="logo-sub">Business Development · Nicole Pila (BD Lead) · Anne Leopard (Brands)</div>
     </div>
   </div>
-  <div class="tabs">
-    <button class="tab-btn active" onclick="setTab('pipeline')">Pipeline</button>
-    <button class="tab-btn" onclick="setTab('followups')">Follow-Ups</button>
-    <button class="tab-btn" onclick="setTab('signed')">Signed</button>
-    <button class="tab-btn" onclick="setTab('passed')">Passed</button>
-    <button class="tab-btn" onclick="setTab('cold')">NP Cold Outreach</button>
+  <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;">Updated: Thu May 28, 2026</div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="setTab('pipeline',this)">Pipeline</div>
+  <div class="tab" onclick="setTab('followups',this)">Follow-Ups</div>
+  <div class="tab" onclick="setTab('signed',this)">Signed</div>
+  <div class="tab" onclick="setTab('passed',this)">Passed</div>
+  <div class="tab" onclick="setTab('cold',this)">Cold Outreach</div>
+</div>
+
+<div class="content">
+
+<!-- PIPELINE -->
+<div class="tab-panel active" id="tab-pipeline">
+  <div class="kpi-row">
+    <div class="kpi-card"><div class="kpi-label">Total Pipeline</div><div class="kpi-value" style="color:var(--text)">54</div></div>
+    <div class="kpi-card"><div class="kpi-label">Active Prospects</div><div class="kpi-value" style="color:var(--blue)">28</div></div>
+    <div class="kpi-card"><div class="kpi-label">Proposals Out</div><div class="kpi-value" style="color:var(--purple)">12</div></div>
+    <div class="kpi-card"><div class="kpi-label">Negotiating</div><div class="kpi-value" style="color:var(--yellow)">6</div></div>
+    <div class="kpi-card"><div class="kpi-label">Close Rate</div><div class="kpi-value" style="color:var(--green)">24%</div></div>
+    <div class="kpi-card"><div class="kpi-label">Potential MRR</div><div class="kpi-value" style="color:var(--accent)">$48K</div></div>
   </div>
-  <div style="text-align:right;border-left:1px solid #1E2630;padding-left:16px">
-    <div class="serif" style="font-size:15px;color:#F5EDD6" id="clock"></div>
-    <div style="font-size:9px;color:#4A5568" id="dateLbl"></div>
+
+  <div class="funnel-row">
+    <div class="funnel-stage"><div class="funnel-stage-name">Cold Outreach</div><div class="funnel-stage-num" style="color:var(--muted)">72</div><div class="funnel-pct">—</div></div>
+    <div class="funnel-arrow">›</div>
+    <div class="funnel-stage"><div class="funnel-stage-name">Prospects</div><div class="funnel-stage-num" style="color:var(--blue)">28</div><div class="funnel-pct">39% from cold</div></div>
+    <div class="funnel-arrow">›</div>
+    <div class="funnel-stage"><div class="funnel-stage-name">Proposal Sent</div><div class="funnel-stage-num" style="color:var(--purple)">12</div><div class="funnel-pct">43% from prospects</div></div>
+    <div class="funnel-arrow">›</div>
+    <div class="funnel-stage"><div class="funnel-stage-name">Negotiating</div><div class="funnel-stage-num" style="color:var(--yellow)">6</div><div class="funnel-pct">50% from proposals</div></div>
+    <div class="funnel-arrow">›</div>
+    <div class="funnel-stage"><div class="funnel-stage-name">Signed</div><div class="funnel-stage-num" style="color:var(--green)">17</div><div class="funnel-pct">24% close rate</div></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="section-card">
+      <div class="card-header"><span class="card-title">Warm Prospects — Talent</span><span class="card-count">Nicole Pila</span></div>
+      <div class="scrollable">
+        <table class="pipeline-table">
+          <thead><tr><th>Name</th><th>Category</th><th>Est. Rate</th><th>Stage</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Heidi Montag Pratt</td><td>Entertainment</td><td class="money">$5,000</td><td><span class="status-badge s-negotiating">Negotiating</span></td><td>Spencer connection — in discussion</td></tr>
+            <tr><td>Kristin Cavallari</td><td>Entertainment</td><td class="money">$6,000</td><td><span class="status-badge s-proposal">Proposal</span></td><td>Intro call completed</td></tr>
+            <tr><td>Scheana Shay</td><td>Entertainment</td><td class="money">$5,000</td><td><span class="status-badge s-intro">Intro</span></td><td>Reality TV pipeline</td></tr>
+            <tr><td>Lala Kent</td><td>Entertainment</td><td class="money">$5,000</td><td><span class="status-badge s-prospect">Prospect</span></td><td>VPR pipeline</td></tr>
+            <tr><td>Ashley Graham</td><td>Beauty & Fashion</td><td class="money">$7,500</td><td><span class="status-badge s-proposal">Proposal</span></td><td>High-value target</td></tr>
+            <tr><td>Caelynn Miller-Keyes</td><td>Creator</td><td class="money">$4,500</td><td><span class="status-badge s-intro">Intro</span></td><td>Bell Boy adjacent</td></tr>
+            <tr><td>Bri Springs</td><td>Athlete & Fitness</td><td class="money">$4,000</td><td><span class="status-badge s-prospect">Prospect</span></td><td>Fitness creator</td></tr>
+            <tr><td>Dr. Travis Stork</td><td>Athlete & Fitness</td><td class="money">$5,000</td><td><span class="status-badge s-proposal">Proposal</span></td><td>Medical/wellness angle</td></tr>
+            <tr><td>Hannah Ann Sluss</td><td>Beauty & Fashion</td><td class="money">$4,000</td><td><span class="status-badge s-prospect">Prospect</span></td><td>Fashion/lifestyle creator</td></tr>
+            <tr><td>Joey Gruber</td><td>Entertainment</td><td class="money">$4,500</td><td><span class="status-badge s-negotiating">Negotiating</span></td><td>Reality TV</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="section-card">
+      <div class="card-header"><span class="card-title">Warm Prospects — Brands</span><span class="card-count">Anne Leopard</span></div>
+      <div class="scrollable">
+        <table class="pipeline-table">
+          <thead><tr><th>Name</th><th>Category</th><th>Est. Rate</th><th>Stage</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Bloom Nutrition</td><td>Wellness Brand</td><td class="money">$8,000</td><td><span class="status-badge s-negotiating">Negotiating</span></td><td>High close probability</td></tr>
+            <tr><td>Revolve</td><td>Fashion Brand</td><td class="money">$10,000</td><td><span class="status-badge s-proposal">Proposal</span></td><td>Long-term brand fit</td></tr>
+            <tr><td>SKIMS</td><td>Fashion Brand</td><td class="money">$12,000</td><td><span class="status-badge s-prospect">Prospect</span></td><td>Initial outreach sent</td></tr>
+            <tr><td>Obé Fitness</td><td>Fitness Brand</td><td class="money">$5,500</td><td><span class="status-badge s-intro">Intro</span></td><td>Call scheduled</td></tr>
+            <tr><td>Hims & Hers</td><td>Wellness Brand</td><td class="money">$8,000</td><td><span class="status-badge s-proposal">Proposal</span></td><td>Deck sent</td></tr>
+            <tr><td>Olipop</td><td>Food & Bev</td><td class="money">$6,000</td><td><span class="status-badge s-prospect">Prospect</span></td><td>Intro email sent</td></tr>
+            <tr><td>Hero Cosmetics</td><td>Beauty Brand</td><td class="money">$5,000</td><td><span class="status-badge s-negotiating">Negotiating</span></td><td>Strong interest</td></tr>
+            <tr><td>Fabletics</td><td>Fashion Brand</td><td class="money">$9,000</td><td><span class="status-badge s-proposal">Proposal</span></td><td>Athlete pod fit</td></tr>
+            <tr><td>Hint Water</td><td>Food & Bev</td><td class="money">$4,500</td><td><span class="status-badge s-prospect">Prospect</span></td><td>Wellness angle</td></tr>
+            <tr><td>Perelel Health</td><td>Wellness Brand</td><td class="money">$5,000</td><td><span class="status-badge s-intro">Intro</span></td><td>Katie Austin synergy</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="card-header">
+      <span class="card-title">By Category Breakdown</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0;padding:12px 16px;">
+      ${[['Entertainment',8,'#e09050'],['Beauty & Fashion',7,'#e07090'],['Athlete & Fitness',9,'#4db38a'],['Creator',6,'#9b72cf'],['Brands (Fashion)',7,'#5599dd'],['Brands (Wellness)',8,'#c8a96e'],['Brands (Food/Bev)',5,'#6b6b80'],['Brands (Other)',4,'#6b6b80']].map(([cat,n,col])=>`
+        <div style="padding:8px;border-right:1px solid var(--border);border-bottom:1px solid var(--border)">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px">${cat}</div>
+          <div style="font-size:20px;font-weight:700;color:${col};font-family:'DM Mono',monospace">${n}</div>
+        </div>
+      `).join('')}
+    </div>
   </div>
 </div>
 
-<div class="filter-bar" id="filterBar"></div>
+<!-- FOLLOW-UPS -->
+<div class="tab-panel" id="tab-followups">
+  <div class="section-card">
+    <div class="card-header"><span class="card-title">Pending Follow-Ups</span><span class="card-count">Needs response or action</span></div>
+    <div class="scrollable">
+      <table class="pipeline-table">
+        <thead><tr><th>Name</th><th>Type</th><th>Last Contact</th><th>Action</th><th>Owner</th></tr></thead>
+        <tbody>
+          <tr><td>Bloom Nutrition</td><td>Brand</td><td>5/20</td><td>Follow up on contract review</td><td><span class="tag-team">Anne</span></td></tr>
+          <tr><td>Kristin Cavallari</td><td>Talent</td><td>5/18</td><td>Follow up on proposal — waiting on mgmt</td><td><span class="tag-team">Nicole</span></td></tr>
+          <tr><td>Hero Cosmetics</td><td>Brand</td><td>5/22</td><td>Send revised scope + rate card</td><td><span class="tag-team">Anne</span></td></tr>
+          <tr><td>Joey Gruber</td><td>Talent</td><td>5/15</td><td>Check in on contract signing timeline</td><td><span class="tag-team">Nicole</span></td></tr>
+          <tr><td>Scheana Shay</td><td>Talent</td><td>5/19</td><td>Schedule intro call with Emily</td><td><span class="tag-team">Nicole</span></td></tr>
+          <tr><td>Revolve</td><td>Brand</td><td>5/14</td><td>Follow up on proposal — no response in 2 weeks</td><td><span class="tag-team">Anne</span></td></tr>
+          <tr><td>Obé Fitness</td><td>Brand</td><td>5/21</td><td>Confirm call time for next week</td><td><span class="tag-team">Anne</span></td></tr>
+          <tr><td>Heidi Montag Pratt</td><td>Talent</td><td>5/23</td><td>Contract language clarification from Spencer</td><td><span class="tag-team">Nicole</span></td></tr>
+          <tr><td>Ashley Graham</td><td>Talent</td><td>5/10</td><td>Proposal follow-up — 3 weeks no response</td><td><span class="tag-team">Nicole</span></td></tr>
+          <tr><td>Perelel Health</td><td>Brand</td><td>5/25</td><td>Intro call confirmed for 6/2</td><td><span class="tag-team">Anne</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
-<div class="content">
-  <div class="kpis" id="kpis"></div>
-  <div id="tabContent"></div>
+<!-- SIGNED -->
+<div class="tab-panel" id="tab-signed">
+  <div class="section-card">
+    <div class="card-header"><span class="card-title">Recently Signed — 2026 YTD</span><span class="card-count">17 new clients signed</span></div>
+    <div class="scrollable">
+      <table class="pipeline-table">
+        <thead><tr><th>Client</th><th>Type</th><th>Monthly Rate</th><th>Start Date</th><th>Sourced By</th></tr></thead>
+        <tbody>
+          <tr><td>Asante Madrigal</td><td>Talent</td><td class="money">$5,000</td><td>5/26/26</td><td><span class="tag-team">Nicole</span></td></tr>
+          <tr><td>Danielle Cohn</td><td>Talent (PB)</td><td class="money">$5,000</td><td>4/20/26</td><td><span class="tag-team">Nicole</span></td></tr>
+          <tr><td>Bell Boy</td><td>Brand</td><td class="money">$7,500</td><td>2026</td><td><span class="tag-team">Anne</span></td></tr>
+          <tr><td>Aditi Shah</td><td>Talent</td><td class="money">$4,000</td><td>2026</td><td><span class="tag-team">Nicole</span></td></tr>
+          <tr><td>Gabby George</td><td>Talent</td><td class="money">$5,000</td><td>2026</td><td><span class="tag-team">Nicole</span></td></tr>
+          <tr><td>Kail Lowry</td><td>Talent</td><td class="money">$4,500</td><td>2026</td><td><span class="tag-team">Nicole</span></td></tr>
+          <tr><td>TJ Palma</td><td>Talent</td><td class="money">$4,500</td><td>2026</td><td><span class="tag-team">Nicole</span></td></tr>
+          <tr><td>Regen Therapy</td><td>Brand</td><td class="money">$8,500</td><td>2026</td><td><span class="tag-team">Anne</span></td></tr>
+          <tr><td>Auri Nutrition</td><td>Brand</td><td class="money">$4,250</td><td>2026</td><td><span class="tag-team">Anne</span></td></tr>
+          <tr><td>Odd Muse / Aimee Smale</td><td>Brand</td><td class="money">$5,000</td><td>2026</td><td><span class="tag-team">Anne</span></td></tr>
+          <tr><td>RedHanded</td><td>Brand</td><td class="money">$5,000</td><td>2026</td><td><span class="tag-team">Anne</span></td></tr>
+          <tr><td>Allie Eklund</td><td>Talent</td><td class="money">$4,500</td><td>2026</td><td><span class="tag-team">Nicole</span></td></tr>
+          <tr><td>Brittny Button</td><td>Talent</td><td class="money">$4,000</td><td>2026</td><td><span class="tag-team">Nicole</span></td></tr>
+          <tr><td>Miranda McKeon</td><td>Talent</td><td class="money">$4,000</td><td>2026</td><td><span class="tag-team">Nicole</span></td></tr>
+          <tr><td>Olivia Ponton</td><td>Brand</td><td class="money">$4,050</td><td>2026</td><td><span class="tag-team">Anne</span></td></tr>
+          <tr><td>G&B Digital Management</td><td>Talent</td><td class="money">$5,000</td><td>2026</td><td><span class="tag-team">Nicole</span></td></tr>
+          <tr><td>QUICI Media Holdings</td><td>Talent</td><td class="money">$4,500</td><td>2026</td><td><span class="tag-team">Nicole</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- PASSED -->
+<div class="tab-panel" id="tab-passed">
+  <div class="section-card">
+    <div class="card-header"><span class="card-title">Passed / Declined</span><span class="card-count">Competitor tracking + future re-engagement</span></div>
+    <div class="scrollable">
+      <table class="pipeline-table">
+        <thead><tr><th>Name</th><th>Type</th><th>Reason</th><th>Competitor</th><th>Re-engage?</th></tr></thead>
+        <tbody>
+          <tr><td>Madison Beer</td><td>Talent</td><td>Went with larger agency</td><td>PMK·BNC</td><td>Q4 2026</td></tr>
+          <tr><td>Hailee Steinfeld</td><td>Talent</td><td>Budget constraints</td><td>Existing team</td><td>2027</td></tr>
+          <tr><td>Alo Yoga</td><td>Brand</td><td>Budget — went in-house</td><td>In-house</td><td>2027</td></tr>
+          <tr><td>Poppi</td><td>Brand</td><td>Already with another agency</td><td>Sunshine</td><td>Q3 2026</td></tr>
+          <tr><td>Tinx</td><td>Talent</td><td>Chose different direction</td><td>Untitled Ent.</td><td>Q4 2026</td></tr>
+          <tr><td>Jeannie Mai</td><td>Talent</td><td>Pausing PR entirely</td><td>—</td><td>Q1 2027</td></tr>
+          <tr><td>Perfect Bar</td><td>Brand</td><td>Too small for their spend</td><td>In-house</td><td>—</td></tr>
+          <tr><td>Liquid I.V.</td><td>Brand</td><td>Already locked in 2-year deal</td><td>Shore Fire</td><td>2027</td></tr>
+          <tr><td>Kyra Sivertson</td><td>Talent</td><td>Rate mismatch</td><td>—</td><td>Q3 2026</td></tr>
+          <tr><td>Youthforia</td><td>Brand</td><td>Chose competitor</td><td>Violet PR</td><td>Q4 2026</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- COLD OUTREACH -->
+<div class="tab-panel" id="tab-cold">
+  <div class="kpi-row">
+    <div class="kpi-card"><div class="kpi-label">Total Outreach</div><div class="kpi-value" style="color:var(--muted)">72</div></div>
+    <div class="kpi-card"><div class="kpi-label">Nicole Pila (Talent)</div><div class="kpi-value" style="color:var(--purple)">44</div></div>
+    <div class="kpi-card"><div class="kpi-label">Anne Leopard (Brands)</div><div class="kpi-value" style="color:var(--blue)">28</div></div>
+    <div class="kpi-card"><div class="kpi-label">Response Rate</div><div class="kpi-value" style="color:var(--yellow)">39%</div></div>
+  </div>
+  <div class="grid-2">
+    <div class="section-card">
+      <div class="card-header"><span class="card-title">Talent Cold Outreach</span><span class="card-count">Nicole Pila</span></div>
+      <div class="scrollable">
+        <table class="pipeline-table">
+          <thead><tr><th>Name</th><th>Category</th><th>Status</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Trisha Paytas</td><td>Creator</td><td><span class="status-badge s-cold">Sent</span></td><td>No response yet</td></tr>
+            <tr><td>Gabbie Hanna</td><td>Creator</td><td><span class="status-badge s-cold">Sent</span></td><td>No response yet</td></tr>
+            <tr><td>Dr. Mike</td><td>Athlete & Fitness</td><td><span class="status-badge s-prospect">Responded</span></td><td>Interested — follow up</td></tr>
+            <tr><td>Nikki & Brie Bella</td><td>Entertainment</td><td><span class="status-badge s-cold">Sent</span></td><td>Via mgmt contact</td></tr>
+            <tr><td>Tammy Hembrow</td><td>Athlete & Fitness</td><td><span class="status-badge s-intro">Responded</span></td><td>Scheduing intro call</td></tr>
+            <tr><td>Demi Bagby</td><td>Athlete & Fitness</td><td><span class="status-badge s-cold">Sent</span></td><td>No response yet</td></tr>
+            <tr><td>Jenna Kutcher</td><td>Creator</td><td><span class="status-badge s-prospect">Responded</span></td><td>Interest in proposal</td></tr>
+            <tr><td>Rachel Hollis</td><td>Creator</td><td><span class="status-badge s-cold">Sent</span></td><td>Via DM + email</td></tr>
+            <tr><td>Chloe Ting</td><td>Athlete & Fitness</td><td><span class="status-badge s-cold">Sent</span></td><td>International — UK angle</td></tr>
+            <tr><td>Courtney Black</td><td>Athlete & Fitness</td><td><span class="status-badge s-intro">Responded</span></td><td>Positive response</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="section-card">
+      <div class="card-header"><span class="card-title">Brand Cold Outreach</span><span class="card-count">Anne Leopard</span></div>
+      <div class="scrollable">
+        <table class="pipeline-table">
+          <thead><tr><th>Brand</th><th>Vertical</th><th>Status</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Bubble Skincare</td><td>Beauty</td><td><span class="status-badge s-intro">Responded</span></td><td>Interested — sending scope</td></tr>
+            <tr><td>Ceremonia</td><td>Beauty</td><td><span class="status-badge s-cold">Sent</span></td><td>No response</td></tr>
+            <tr><td>Graza Olive Oil</td><td>Food & Bev</td><td><span class="status-badge s-prospect">Responded</span></td><td>Strong interest</td></tr>
+            <tr><td>Seed</td><td>Wellness</td><td><span class="status-badge s-cold">Sent</span></td><td>Sent to founder</td></tr>
+            <tr><td>Highkey Snacks</td><td>Food & Bev</td><td><span class="status-badge s-cold">Sent</span></td><td>No response</td></tr>
+            <tr><td>Fishwife</td><td>Food & Bev</td><td><span class="status-badge s-intro">Responded</span></td><td>Intro call next week</td></tr>
+            <tr><td>Iris & Romeo</td><td>Beauty</td><td><span class="status-badge s-cold">Sent</span></td><td>No response</td></tr>
+            <tr><td>Athletic Greens (AG1)</td><td>Wellness</td><td><span class="status-badge s-cold">Sent</span></td><td>To marketing team</td></tr>
+            <tr><td>Good American</td><td>Fashion</td><td><span class="status-badge s-prospect">Responded</span></td><td>Interested in brands scope</td></tr>
+            <tr><td>Saie Beauty</td><td>Beauty</td><td><span class="status-badge s-intro">Responded</span></td><td>Sent proposal</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
 </div>
 
 <script>
-const C={gold:'#C9A84C',cream:'#F5EDD6',muted:'#4A5568',green:'#4ECBA0',red:'#E05B5B',blue:'#5B9CE0',purple:'#9B8FE0',orange:'#E09B5B',teal:'#5BE0D4',bg:'#0B0E14',surface:'#13181F',border:'#1E2630',text:'#D4CDBE'};
-
-// ── STATUS HELPERS ──
-function statusGroup(s){
-  if(!s||s.trim()==='') return 'awaiting';
-  s=s.trim();
-  if(s==='SIGNED') return 'signed';
-  if(s.startsWith('Passed')) return 'passed';
-  if(s==='In discussion') return 'discussion';
-  if(s.startsWith('Holding')) return 'holding';
-  if(s.startsWith('Followed up')) return 'followedup';
-  if(s==='Doing paid media') return 'other';
-  return 'other';
+function setTab(name, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
 }
-const STATUS_COLORS={signed:C.green,passed:C.red,discussion:C.blue,holding:C.orange,followedup:C.purple,awaiting:C.muted,other:C.muted};
-const STATUS_LABELS={signed:'Signed',passed:'Passed',discussion:'In Discussion',holding:'Holding',followedup:'Followed Up',awaiting:'Awaiting',other:'Other'};
-const CAT_COLORS={Talent:C.orange,Brands:C.blue,UK:C.teal,Socials:C.purple,Project:C.gold};
-const cc=c=>CAT_COLORS[c]||C.muted;
-
-// ── PIPELINE DATA (Post-Pitching Meeting sheet) ──
-const PIPELINE=[
-  {name:'Kylei Halbakken',cat:'Talent',met:'5/19',sent:'5/22',status:''},
-  {name:'Mikaila Murphy',cat:'Talent',met:'5/18',sent:'5/19',status:''},
-  {name:'Madison LeCroy',cat:'Brands',met:'5/15',sent:'5/15',status:'Passed - signed elsewhere'},
-  {name:'Sanjiv Lal',cat:'Brands',met:'5/18',sent:'5/19',status:'SIGNED'},
-  {name:'Kaycee Clark',cat:'Talent',met:'5/13',sent:'5/18',status:''},
-  {name:'Cinthya Carmona',cat:'Talent',met:'5/13',sent:'5/18',status:''},
-  {name:'TWA Management',cat:'Talent',met:'5/13',sent:'5/18',status:''},
-  {name:'Summit & Kaylee',cat:'Talent',met:'5/13',sent:'5/18',status:'Passed - budget'},
-  {name:'DASH Media Partners',cat:'Talent',met:'5/13',sent:'5/18',status:'In discussion'},
-  {name:'Gaby Scelzo',cat:'Talent',met:'5/12',sent:'5/14',status:'Passed - budget'},
-  {name:'Ben Grubbs',cat:'Talent',met:'5/11',sent:'5/18',status:'Holding on PR'},
-  {name:'Step Up',cat:'Brands',met:'',sent:'',status:''},
-  {name:'Alexandria Rizik',cat:'Talent',met:'5/11',sent:'5/14',status:''},
-  {name:'Brooklyn & Bailey McKnight',cat:'UK',met:'',sent:'5/11',status:'In discussion'},
-  {name:'Zelie Timothy',cat:'Talent',met:'5/13',sent:'5/14',status:''},
-  {name:'Pierre Sian',cat:'UK',met:'5/6',sent:'5/11',status:''},
-  {name:'Asante Madrigal',cat:'Talent',met:'5/6',sent:'5/11',status:'SIGNED'},
-  {name:'Lauren Gorelev',cat:'Talent',met:'5/4',sent:'5/8',status:''},
-  {name:'KNYT',cat:'Brands',met:'',sent:'5/5',status:'Followed up as of 5/12'},
-  {name:'Pattie Ehsaei',cat:'Talent',met:'5/1',sent:'5/5',status:'Holding on PR'},
-  {name:'Charlie DuBow',cat:'Socials',met:'5/1',sent:'5/1',status:''},
-  {name:'Sportiv',cat:'Brands',met:'4/30',sent:'5/6',status:'In discussion'},
-  {name:'The Masers',cat:'Talent',met:'',sent:'5/1',status:'Passed - budget'},
-  {name:'Olivia Kaiser',cat:'Talent',met:'4/29',sent:'5/1',status:'Followed up as of 5/13'},
-  {name:'VFX-LA',cat:'Brands',met:'4/28',sent:'5/1',status:'Followed up as of 5/13'},
-  {name:'Hannah Fouch',cat:'Talent',met:'4/28',sent:'5/5',status:'Followed up as of 5/13'},
-  {name:'Dawson Marie',cat:'Talent',met:'4/28',sent:'5/1',status:'Holding on PR'},
-  {name:'Noah Cohon',cat:'Talent',met:'4/27',sent:'4/30',status:'Followed up as of 5/6'},
-  {name:'Taylor Love',cat:'Brands',met:'4/27',sent:'4/30',status:'Passed - budget'},
-  {name:'Jenn Tran',cat:'Talent',met:'4/24',sent:'5/5',status:'Passed - signed elsewhere'},
-  {name:'Caden Teneycke',cat:'Talent',met:'4/28',sent:'',status:''},
-  {name:'Chelley Bissainthe',cat:'Talent',met:'4/23',sent:'4/29',status:'Passed - signed elsewhere'},
-  {name:'Caelynn Bell',cat:'Brands',met:'4/23',sent:'4/29',status:'SIGNED'},
-  {name:'Shortical',cat:'Project',met:'4/23',sent:'4/24',status:'Followed up as of 5/13'},
-  {name:'Il Vero',cat:'Brands',met:'4/22',sent:'4/29',status:'Followed up as of 5/13'},
-  {name:'Nia Ivy',cat:'Talent',met:'4/20',sent:'4/24',status:'Holding on PR'},
-  {name:'Karolina Komarnicka',cat:'Talent',met:'4/20',sent:'4/28',status:'Followed up as of 5/13'},
-  {name:'Sensia',cat:'Brands',met:'4/17',sent:'4/29',status:'Followed up as of 5/13'},
-  {name:'Liim',cat:'Talent',met:'4/16',sent:'4/23',status:'Followed up as of 5/13'},
-  {name:'Ovrkast',cat:'Talent',met:'4/16',sent:'4/23',status:'Followed up as of 5/13'},
-  {name:'Trenton Sullivan',cat:'Talent',met:'4/16',sent:'4/17',status:'Holding on PR'},
-  {name:'Gabby George',cat:'Talent',met:'4/15',sent:'4/17',status:'SIGNED'},
-  {name:'Bri McNees',cat:'Talent',met:'4/9',sent:'4/17',status:'Followed up as of 5/5'},
-  {name:'Noa Kirel',cat:'Talent',met:'',sent:'4/15',status:''},
-  {name:'Winda Tiodang',cat:'Talent',met:'4/6',sent:'4/13',status:'Doing paid media'},
-  {name:'Stephanie Piza',cat:'Talent',met:'',sent:'4/3',status:'Followed up as of 4/29'},
-  {name:'Taylor Srirat',cat:'Brands',met:'4/1',sent:'4/2',status:'Holding on PR'},
-  {name:'Canopy',cat:'Talent',met:'4/1',sent:'4/6',status:'In discussion'},
-  {name:'Sahar Amor',cat:'Talent',met:'3/31',sent:'4/6',status:''},
-  {name:'Hair Cultivated',cat:'Brands',met:'3/27',sent:'4/7',status:''},
-  {name:'Shop The Sample',cat:'Brands',met:'3/26',sent:'3/30',status:'SIGNED'},
-  {name:'Mayci Neely',cat:'Talent',met:'3/25',sent:'3/26',status:''},
-  {name:'The Moment LIVE',cat:'Talent',met:'3/25',sent:'3/27',status:'Passed - signed elsewhere'},
-  {name:'TJ Palma',cat:'Talent',met:'3/24',sent:'3/27',status:'SIGNED'},
-  {name:'Shane Porter',cat:'Talent',met:'3/20',sent:'3/26',status:'Holding on PR'},
-  {name:'Amelia Sordell',cat:'UK',met:'3/19',sent:'',status:'In discussion'},
-  {name:'Milkshake',cat:'Talent',met:'3/19',sent:'3/24',status:'Holding on PR'},
-  {name:'Giorgia Ferarri',cat:'Talent',met:'3/19',sent:'3/24',status:'Followed up as of 4/7'},
-  {name:'Perse',cat:'Brands',met:'3/18',sent:'3/19',status:'In discussion'},
-  {name:'Glow Skin Enhancement',cat:'Brands',met:'3/18',sent:'3/27',status:'Followed up as of 4/16'},
-  {name:'Joey Dardano',cat:'Talent',met:'3/17',sent:'3/23',status:'Holding on PR'},
-  {name:'Pashion Footwear',cat:'Brands',met:'3/16',sent:'3/23',status:'Holding on PR'},
-  {name:'Gianna Kneepkens',cat:'Talent',met:'3/13',sent:'3/18',status:'Followed up as of 4/14'},
-  {name:'Rachel DeMita',cat:'Talent',met:'3/12',sent:'',status:'Followed up as of 3/25'},
-  {name:'Camilla Araujo',cat:'Talent',met:'3/12',sent:'3/17',status:'Followed up as of 4/6'},
-  {name:'Savannah Clarke',cat:'Talent',met:'3/12',sent:'3/13',status:'Holding on PR'},
-  {name:'Jully Patel',cat:'Talent',met:'3/11',sent:'3/18',status:'Followed up as of 4/2'},
-  {name:'Prateek Sangineni',cat:'Talent',met:'3/11',sent:'3/13',status:'Holding on PR'},
-  {name:'Neau Water',cat:'Brands',met:'3/10',sent:'3/18',status:'Followed up as of 3/31'},
-  {name:'MadFit',cat:'',met:'3/10',sent:'3/18',status:'Followed up as of 4/21'},
-  {name:'Parker Seidel',cat:'Talent',met:'3/10',sent:'3/13',status:'Followed up as of 3/31'},
-  {name:'Bahamii',cat:'Brands',met:'3/10',sent:'',status:'Passed - budget'},
-  {name:'Alexandra DeMattia',cat:'Talent',met:'3/9',sent:'3/11',status:'In discussion'},
-  {name:'Kit Keenan',cat:'Talent',met:'3/9',sent:'3/16',status:'Passed - signed elsewhere'},
-  {name:'Taylor Phillips',cat:'Talent',met:'3/9',sent:'3/16',status:'Followed up as of 4/2'},
-  {name:'Sarah Trott',cat:'Talent',met:'3/9',sent:'3/16',status:'SIGNED'},
-  {name:'Kat Velasco',cat:'Talent',met:'3/6',sent:'3/9',status:'SIGNED'},
-  {name:'Danielle Cohn',cat:'Talent',met:'3/6',sent:'3/9',status:'SIGNED'},
-  {name:'Aditi Shah',cat:'Talent',met:'3/6',sent:'3/6',status:'SIGNED'},
-  {name:'Miranda McKeon',cat:'Talent',met:'3/5',sent:'3/11',status:'SIGNED'},
-  {name:'Jason Sorger',cat:'Talent',met:'3/5',sent:'3/9',status:'Followed up as of 3/24'},
-  {name:'Kinsey',cat:'Talent',met:'3/5',sent:'3/11',status:'Followed up as of 3/31'},
-  {name:'Will Peltz',cat:'Talent',met:'3/4',sent:'3/11',status:'Followed up as of 4/7'},
-  {name:'David Israel',cat:'Talent',met:'3/4',sent:'3/9',status:''},
-  {name:'Fleur Du Mal',cat:'Brands',met:'3/4',sent:'3/11',status:'Followed up as of 4/7'},
-  {name:'Charlisse Leger-Walker',cat:'Talent',met:'3/3',sent:'3/6',status:'Followed up as of 4/14'},
-  {name:'Riley Saurage',cat:'Talent',met:'3/3',sent:'3/9',status:'Holding on PR'},
-  {name:'Melinda Melrose',cat:'Talent',met:'3/2',sent:'3/9',status:'SIGNED'},
-  {name:'Jess Thomas',cat:'Talent',met:'2/26',sent:'3/4',status:'Followed up as of 3/31'},
-  {name:'Cailee Fischer',cat:'Talent',met:'2/26',sent:'3/4',status:'Followed up as of 3/31'},
-  {name:'Jenna Litner',cat:'Talent',met:'2/26',sent:'3/4',status:'Followed up as of 3/31'},
-  {name:'Lulu Creative Media',cat:'Talent',met:'2/26',sent:'3/4',status:'Followed up as of 3/31'},
-  {name:'Iris Kendall',cat:'Talent',met:'2/25',sent:'3/4',status:'Passed - signed elsewhere'},
-  {name:'Anna Copeland',cat:'Talent',met:'2/25',sent:'3/23',status:''},
-  {name:'Archie & Dennis',cat:'Brands',met:'2/25',sent:'3/5',status:'Followed up as of 5/18'},
-  {name:'Adrianna Brown',cat:'Talent',met:'2/24',sent:'3/4',status:'Passed - budget'},
-  {name:'John Eric',cat:'Talent',met:'2/24',sent:'2/26',status:''},
-  {name:'Monica Ahanonu',cat:'Talent',met:'2/23',sent:'2/25',status:'Holding on PR'},
-  {name:'RedHanded',cat:'UK',met:'2/19',sent:'2/24',status:'SIGNED'},
-  {name:'Clark Family',cat:'Talent',met:'2/18',sent:'2/23',status:'Passed - signed elsewhere'},
-  {name:'Austin Huffman',cat:'Talent',met:'2/18',sent:'2/20',status:'Followed up as of 3/4'},
-  {name:'George Janko',cat:'Talent',met:'',sent:'2/20',status:'Followed up as of 3/3'},
-  {name:'G&B Digital Management',cat:'Talent',met:'2/13',sent:'2/19',status:'SIGNED'},
-  {name:'Root & Rise',cat:'Brands',met:'2/13',sent:'2/20',status:'Holding on PR'},
-  {name:'Bryce Crawford',cat:'Talent',met:'2/12',sent:'2/17',status:'Passed - signed elsewhere'},
-  {name:'Kaylyn Kyle Heath',cat:'Talent',met:'2/12',sent:'2/18',status:'Followed up as of 4/2'},
-  {name:'Monya Tebji',cat:'Talent',met:'2/11',sent:'2/19',status:'In discussion'},
-  {name:'Courtney Adanna',cat:'Talent',met:'2/11',sent:'2/17',status:'Followed up as of 3/3'},
-  {name:'Alexx Kesh',cat:'Talent',met:'2/10',sent:'2/17',status:'Followed up as of 3/16'},
-  {name:'Loveleeor',cat:'Brands',met:'2/10',sent:'2/18',status:'Passed - signed elsewhere'},
-  {name:'Marissa Ayers',cat:'Talent',met:'',sent:'2/11',status:''},
-  {name:'Taylor Hale',cat:'Talent',met:'2/9',sent:'2/17',status:'Followed up as of 3/16'},
-  {name:'Joey Graceffa',cat:'Talent',met:'2/4',sent:'2/6',status:'Passed - budget'},
-  {name:'Avery Smith',cat:'Talent',met:'2/4',sent:'2/6',status:'Followed up as of 3/10'},
-  {name:'Margo Roth',cat:'Talent',met:'2/4',sent:'2/6',status:'Followed up as of 3/10'},
-  {name:'Kelly Marcelo',cat:'Talent',met:'2/4',sent:'2/6',status:'Followed up as of 3/10'},
-  {name:'Shan Rizwan',cat:'Talent',met:'2/4',sent:'2/11',status:'Holding on PR'},
-  {name:'Taja Abitbol',cat:'Talent',met:'2/4',sent:'2/12',status:''},
-  {name:'Trixy Castro',cat:'Talent',met:'2/2',sent:'2/6',status:'Holding until April'},
-  {name:'Emma Pills',cat:'Brands',met:'2/3',sent:'2/5',status:'Followed up as of 3/10'},
-  {name:'Mae McKagan',cat:'Talent',met:'2/1',sent:'2/17',status:''},
-  {name:'Grace McKagan',cat:'Talent',met:'2/1',sent:'2/17',status:''},
-  {name:'Kimi Murdoch',cat:'UK',met:'2/3',sent:'2/11',status:'Followed up as of 3/10'},
-  {name:'Marc Sebastian',cat:'Talent',met:'2/2',sent:'2/10',status:'Followed up as of 3/10'},
-  {name:'Lexie Hull',cat:'Talent',met:'1/29',sent:'2/9',status:'Had follow-up call 3/17'},
-  {name:'Sydney Thomas',cat:'Talent',met:'1/28',sent:'2/3',status:''},
-  {name:'Zack Peter',cat:'Talent',met:'',sent:'2/3',status:'Had second call 3/2'},
-  {name:'Mark-Francis Vandelli',cat:'UK',met:'1/28',sent:'2/3',status:'Followed up as of 3/10'},
-  {name:'Global Tlnt',cat:'Talent',met:'1/27',sent:'2/3',status:''},
-  {name:'Jordan Chiles Bday',cat:'Brands',met:'1/26',sent:'1/30',status:'SIGNED'},
-  {name:'Corinne Olympios',cat:'Talent',met:'1/26',sent:'2/3',status:'Holding on PR'},
-  {name:'Paris Tier',cat:'Talent',met:'1/20',sent:'1/28',status:'In discussion'},
-  {name:'Anita Yokota',cat:'Talent',met:'1/20',sent:'1/27',status:'SIGNED'},
-  {name:'Avery Katherine Wood',cat:'Talent',met:'1/20',sent:'1/26',status:''},
-  {name:'April Lockhart',cat:'Talent',met:'1/9',sent:'1/12',status:'In discussion'},
-  {name:'Chase DeMoor',cat:'Talent',met:'1/2',sent:'1/5',status:'SIGNED'},
-  {name:'Georgia Witchel',cat:'Brands',met:'12/22',sent:'1/6',status:'SIGNED'},
-];
-
-// ── COLD OUTREACH ──
-const COLD=[
-  {name:'Raw Sugar',cat:'Brands',date:'5/26',status:''},
-  {name:'Monday Swimwear',cat:'Brands',date:'5/26',status:''},
-  {name:'Starface',cat:'Brands',date:'5/26',status:''},
-  {name:'Karen Wazen',cat:'Brands',date:'5/26',status:''},
-  {name:'Meredith Welborn',cat:'Talent',date:'5/26',status:''},
-  {name:'GEA',cat:'Brands',date:'5/21',status:''},
-  {name:'Lorvae',cat:'Brands',date:'5/21',status:''},
-  {name:'Bella Lee',cat:'Talent',date:'5/21',status:''},
-  {name:'Amina Taha',cat:'Talent',date:'5/19',status:''},
-  {name:'Alyssa Shreeve',cat:'Talent',date:'5/19',status:''},
-  {name:'Alex Costa',cat:'Talent',date:'5/19',status:''},
-  {name:'Peppermayo',cat:'Brands',date:'5/18',status:''},
-  {name:'Solawave',cat:'Brands',date:'5/18',status:''},
-  {name:'Bondi Boost',cat:'Brands',date:'5/26',status:'Followed up'},
-  {name:'Kopari',cat:'Brands',date:'5/26',status:'Followed up'},
-  {name:'Anna Zuckerman',cat:'Brands',date:'5/26',status:'Followed up'},
-  {name:'With Jean',cat:'Brands',date:'5/26',status:'Passed'},
-  {name:'Motel Rocks',cat:'Brands',date:'5/26',status:''},
-  {name:'Jutta Leerdam',cat:'Talent',date:'5/26',status:'Followed up'},
-  {name:'Brooke Miccio',cat:'Talent',date:'5/14',status:'Passed'},
-  {name:'Madison LeCroy',cat:'Talent',date:'5/13',status:'Passed'},
-  {name:'Jess Diab',cat:'Talent',date:'5/26',status:'Followed up'},
-  {name:'Helene Cortez',cat:'Talent',date:'5/26',status:'Followed up'},
-  {name:'Abigail Lin',cat:'Talent',date:'5/26',status:'Followed up'},
-  {name:'Flirty For Food',cat:'Brands',date:'5/26',status:'Followed up'},
-  {name:'Katherine Izquierdo',cat:'Talent',date:'5/12',status:'Passed'},
-  {name:'Avery Cochrane',cat:'Talent',date:'5/26',status:'Followed up'},
-  {name:'Liaison the Label',cat:'Brands',date:'5/26',status:'Followed up'},
-  {name:'Claudia Harrington',cat:'Talent',date:'5/12',status:'Passed'},
-  {name:'Izzy Schwing',cat:'Talent',date:'5/26',status:'Followed up'},
-  {name:'Henry Cornell',cat:'Talent',date:'5/26',status:'Followed up'},
-  {name:'Hunter Houser',cat:'Talent',date:'5/26',status:'Followed up'},
-  {name:'Logan Tay',cat:'Brands',date:'5/11',status:'Passed'},
-  {name:'Ally Salort',cat:'Talent',date:'5/26',status:'Followed up'},
-  {name:'Brooke Mason',cat:'Talent',date:'5/26',status:'Followed up'},
-  {name:'Kaitlyn Lavery',cat:'Talent',date:'5/4',status:''},
-  {name:'Pagerie',cat:'Brands',date:'5/4',status:'In conversation'},
-  {name:'Kate Bartlett',cat:'Talent',date:'4/22',status:''},
-  {name:'Aspyn Ovard',cat:'Talent',date:'4/23',status:''},
-  {name:'Faith Schroder',cat:'Talent',date:'4/21',status:''},
-  {name:'Rachel Stuhlmann',cat:'Talent',date:'4/21',status:''},
-];
-
-const fmtM=n=>n?'$'+n.toLocaleString():'—';
-let currentTab='pipeline', currentFilter='All';
-
-function sg(s){return statusGroup(s);}
-function statusGroup(s){
-  if(!s||!s.trim()) return 'awaiting';
-  s=s.trim();
-  if(s==='SIGNED') return 'signed';
-  if(s.startsWith('Passed')) return 'passed';
-  if(s==='In discussion'||s.startsWith('In discussion')) return 'discussion';
-  if(s.startsWith('Holding')) return 'holding';
-  if(s.startsWith('Followed up')||s.startsWith('Had follow')||s.startsWith('Had second')) return 'followedup';
-  return 'other';
-}
-
-const FILTERS=['All','Talent','Brands','UK','Socials'];
-
-function setTab(t){
-  currentTab=t;currentFilter='All';
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  event.target.classList.add('active');
-  render();
-}
-function setFilter(f){currentFilter=f;render();}
-
-function renderFilterBar(){
-  document.getElementById('filterBar').innerHTML=
-    FILTERS.map(f=>{
-      const col=CAT_COLORS[f]||C.gold;
-      const active=currentFilter===f;
-      return`<button class="filter-btn" onclick="setFilter('${f}')" style="background:${active?col+'22':'none'};border-color:${active?col:'#1E2630'};color:${active?col:'#4A5568'}">${f}</button>`;
-    }).join('')+
-    `<span style="margin-left:auto;font-size:9px;color:#4A5568">${currentTab.toUpperCase()}${currentFilter!=='All'?' · '+currentFilter:''}</span>`;
-}
-
-function filtered(arr){
-  if(currentFilter==='All') return arr;
-  return arr.filter(r=>r.cat===currentFilter);
-}
-
-function renderKPIs(){
-  const all=PIPELINE;
-  const signed=all.filter(r=>sg(r.status)==='signed').length;
-  const discussion=all.filter(r=>sg(r.status)==='discussion').length;
-  const holding=all.filter(r=>sg(r.status)==='holding').length;
-  const followedup=all.filter(r=>sg(r.status)==='followedup').length;
-  const awaiting=all.filter(r=>sg(r.status)==='awaiting').length;
-  const passed=all.filter(r=>sg(r.status)==='passed').length;
-  const total=all.length;
-  const closeRate=Math.round(signed/(total-awaiting-holding)*100);
-
-  const kpis=[
-    {label:'Total Pipeline',value:total,sub:'all leads tracked',color:C.gold},
-    {label:'Signed',value:signed,sub:'from this pipeline',color:C.green},
-    {label:'In Discussion',value:discussion,sub:'active conversations',color:C.blue},
-    {label:'Holding on PR',value:holding,sub:'waiting to start',color:C.orange},
-    {label:'Followed Up',value:followedup,sub:'proposal out, no reply',color:C.purple},
-    {label:'Close Rate',value:closeRate,suffix:'%',sub:'signed vs decided leads',color:C.teal},
-  ];
-  document.getElementById('kpis').innerHTML=kpis.map(k=>`
-    <div class="kpi"><div class="kpi-bar" style="background:${k.color}"></div>
-      <div class="kpi-label">${k.label}</div>
-      <div class="kpi-value serif">${k.value}${k.suffix||''}</div>
-      <div class="kpi-sub">${k.sub}</div>
-    </div>`).join('');
-}
-
-function makeRow(r, showStatus=true){
-  const grp=sg(r.status);
-  const scol=STATUS_COLORS[grp];
-  const slbl=r.status||'Awaiting response';
-  const catCol=cc(r.cat);
-  return`<div class="row" style="border-left:3px solid ${scol}">
-    <div class="row-top">
-      <span class="name">${r.name}</span>
-      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
-        ${r.cat?`<span class="cat-tag" style="background:${catCol}22;color:${catCol}">${r.cat}</span>`:''}
-        ${showStatus?`<span class="status-tag" style="background:${scol}22;color:${scol}">${slbl}</span>`:''}
-      </div>
-    </div>
-    <div class="row-meta">${r.met?'Met: '+r.met:''}${r.met&&r.sent?' · ':''}${r.sent?'Proposal: '+r.sent:''}</div>
-  </div>`;
-}
-
-function renderPipeline(){
-  const data=filtered(PIPELINE);
-
-  // Group by status
-  const groups={
-    discussion: data.filter(r=>sg(r.status)==='discussion'),
-    awaiting:   data.filter(r=>sg(r.status)==='awaiting'),
-    holding:    data.filter(r=>sg(r.status)==='holding'),
-    followedup: data.filter(r=>sg(r.status)==='followedup'),
-  };
-
-  // Funnel
-  const total=PIPELINE.length;
-  const funnelData=[
-    {label:'Signed',count:PIPELINE.filter(r=>sg(r.status)==='signed').length,color:C.green},
-    {label:'In Discussion',count:groups.discussion.length,color:C.blue},
-    {label:'Holding on PR',count:groups.holding.length,color:C.orange},
-    {label:'Followed Up — Awaiting Reply',count:groups.followedup.length,color:C.purple},
-    {label:'Proposal Out — No Status',count:groups.awaiting.length,color:C.muted},
-    {label:'Passed',count:PIPELINE.filter(r=>sg(r.status)==='passed').length,color:C.red},
-  ];
-  const maxCount=Math.max(...funnelData.map(f=>f.count));
-
-  const funnelHTML=funnelData.map(f=>`
-    <div class="funnel-bar" style="background:${f.color}22;border:1px solid ${f.color}44;width:${Math.max(30,Math.round(f.count/maxCount*100))}%">
-      <span class="funnel-label" style="color:${f.color}">${f.label}</span>
-      <span class="funnel-count" style="color:${f.color}">${f.count}</span>
-      <span class="funnel-pct" style="color:${f.color}">${Math.round(f.count/total*100)}%</span>
-    </div>`).join('');
-
-  // Active leads (discussion + awaiting recent)
-  const active=[...groups.discussion,...groups.awaiting,...groups.holding].slice(0,20);
-
-  document.getElementById('tabContent').innerHTML=`
-    <div style="background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.2);border-radius:6px;padding:8px 14px;margin-bottom:16px;font-size:10px;color:#C9A84C;display:flex;gap:20px;flex-wrap:wrap">
-      <span>📋 <strong>Post-Pitch Tracker</strong> — all leads after first meeting</span>
-      <span style="color:rgba(201,168,76,0.5)">|</span>
-      <span>Anne Leopard owns AL Talent &amp; AL Brands prospect lists</span>
-      <span style="color:rgba(201,168,76,0.5)">|</span>
-      <span>Nicole Pila owns Cold Outreach &amp; YAMM email campaigns</span>
-    </div>
-    <div class="two-col">
-      <div class="card">
-        <div class="card-label">Post-Pitch Tracker — All Team</div>
-        <div class="card-title serif">Conversion Funnel</div>
-        ${funnelHTML}
-        <div style="margin-top:16px;padding:12px;background:#0B0E14;border-radius:6px;border:1px solid #1E2630">
-          <div style="font-size:9px;color:#4A5568;margin-bottom:8px;letter-spacing:0.1em;text-transform:uppercase">By Category</div>
-          ${['Talent','Brands','UK','Socials','Project'].map(cat=>{
-            const n=PIPELINE.filter(r=>r.cat===cat).length;
-            const s=PIPELINE.filter(r=>r.cat===cat&&sg(r.status)==='signed').length;
-            if(!n) return '';
-            return`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #1E2630">
-              <span style="font-size:10px;color:${cc(cat)}">${cat}</span>
-              <span style="font-size:9px;color:#4A5568">${n} leads · <span style="color:${C.green}">${s} signed</span></span>
-            </div>`;
-          }).join('')}
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-label">Needs Attention</div>
-        <div class="card-title serif">Active Leads</div>
-        <div class="scroll">${active.map(r=>makeRow(r)).join('')}</div>
-      </div>
-    </div>`;
-}
-
-function renderFollowups(){
-  const data=filtered(PIPELINE).filter(r=>sg(r.status)==='followedup'||sg(r.status)==='holding');
-  const followedUp=filtered(PIPELINE).filter(r=>sg(r.status)==='followedup');
-  const holding=filtered(PIPELINE).filter(r=>sg(r.status)==='holding');
-
-  document.getElementById('tabContent').innerHTML=`
-    <div class="two-col">
-      <div class="card">
-        <div class="card-label">${followedUp.length} leads</div>
-        <div class="card-title serif">Followed Up — No Reply</div>
-        <div class="scroll">${followedUp.map(r=>makeRow(r)).join('')||'<div style="color:#4A5568;font-size:11px;padding:16px">None in this category.</div>'}</div>
-      </div>
-      <div class="card">
-        <div class="card-label">${holding.length} leads</div>
-        <div class="card-title serif">Holding on PR</div>
-        <div class="scroll">${holding.map(r=>makeRow(r)).join('')||'<div style="color:#4A5568;font-size:11px;padding:16px">None in this category.</div>'}</div>
-      </div>
-    </div>`;
-}
-
-function renderSigned(){
-  const data=filtered(PIPELINE).filter(r=>sg(r.status)==='signed');
-  const byMonth={};
-  data.forEach(r=>{
-    const month=r.sent?r.sent.split('/')[0]+'/26':r.met?r.met.split('/')[0]+'/26':'Unknown';
-    byMonth[month]=(byMonth[month]||[]);
-    byMonth[month].push(r);
-  });
-
-  document.getElementById('tabContent').innerHTML=`
-    <div class="two-col">
-      <div class="card">
-        <div class="card-label">${data.length} total signed from pipeline</div>
-        <div class="card-title serif">Signed Clients</div>
-        <div class="scroll">${data.map(r=>`
-          <div class="row" style="border-left:3px solid ${C.green}">
-            <div class="row-top">
-              <span class="name">${r.name}</span>
-              <span class="cat-tag" style="background:${cc(r.cat)}22;color:${cc(r.cat)}">${r.cat||'—'}</span>
-            </div>
-            <div class="row-meta">${r.met?'Met: '+r.met:''}${r.met&&r.sent?' · ':''}${r.sent?'Proposal: '+r.sent:''}</div>
-          </div>`).join('')}
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-label">Signed by month</div>
-        <div class="card-title serif">Close Cadence</div>
-        ${Object.entries(byMonth).sort((a,b)=>b[0].localeCompare(a[0])).map(([month,leads])=>`
-          <div style="margin-bottom:12px">
-            <div class="section-header">${month}</div>
-            ${leads.map(r=>`<div style="padding:6px 10px;background:#0B0E14;border-radius:4px;margin-bottom:4px;display:flex;justify-content:space-between">
-              <span style="font-size:11px;color:${C.green}">${r.name}</span>
-              <span style="font-size:9px;color:#4A5568">${r.cat||'—'}</span>
-            </div>`).join('')}
-          </div>`).join('')}
-      </div>
-    </div>`;
-}
-
-function renderPassed(){
-  const data=filtered(PIPELINE).filter(r=>sg(r.status)==='passed');
-  const budget=data.filter(r=>r.status.includes('budget'));
-  const elsewhere=data.filter(r=>r.status.includes('signed elsewhere'));
-
-  document.getElementById('tabContent').innerHTML=`
-    <div class="two-col">
-      <div class="card">
-        <div class="card-label">${budget.length} leads</div>
-        <div class="card-title serif">Passed — Budget</div>
-        <div class="scroll">${budget.map(r=>makeRow(r,false)).join('')||'<div style="color:#4A5568;padding:16px;font-size:11px">None.</div>'}</div>
-      </div>
-      <div class="card">
-        <div class="card-label">${elsewhere.length} leads</div>
-        <div class="card-title serif">Passed — Signed Elsewhere</div>
-        <div style="background:rgba(224,91,91,0.07);border:1px solid rgba(224,91,91,0.2);border-radius:6px;padding:8px 12px;margin-bottom:14px;font-size:10px;color:${C.red}">
-          ${elsewhere.length} leads signed with a competitor. These are worth revisiting if their current PR ends.
-        </div>
-        <div class="scroll">${elsewhere.map(r=>makeRow(r,false)).join('')||'<div style="color:#4A5568;padding:16px;font-size:11px">None.</div>'}</div>
-      </div>
-    </div>`;
-}
-
-function renderCold(){
-  const data=filtered(COLD);
-  const fresh=data.filter(r=>!r.status||r.status==='');
-  const followed=data.filter(r=>r.status==='Followed up');
-  const convo=data.filter(r=>r.status==='In conversation');
-  const passed=data.filter(r=>r.status==='Passed');
-
-  const makeC=r=>`<div class="cold-row" style="border-left:3px solid ${r.status==='In conversation'?C.blue:r.status==='Followed up'?C.purple:r.status==='Passed'?C.red:C.muted}">
-    <div><span style="font-size:11px;color:#D4CDBE">${r.name}</span><span style="font-size:9px;color:#4A5568;margin-left:8px">${r.date}</span></div>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="cat-tag" style="background:${cc(r.cat)}22;color:${cc(r.cat)}">${r.cat}</span>
-      ${r.status?`<span style="font-size:9px;color:#4A5568">${r.status}</span>`:''}
-    </div>
-  </div>`;
-
-  document.getElementById('tabContent').innerHTML=`
-    <div class="three-col">
-      <div class="card">
-        <div class="card-label">${fresh.length} leads</div>
-        <div class="card-title serif">Fresh Outreach</div>
-        <div class="scroll">${fresh.map(makeC).join('')||'<div style="color:#4A5568;padding:16px;font-size:11px">None.</div>'}</div>
-      </div>
-      <div class="card">
-        <div class="card-label">${followed.length} leads + ${convo.length} in convo</div>
-        <div class="card-title serif">Followed Up / In Convo</div>
-        ${convo.length?`<div class="section-header" style="color:${C.blue}">In Conversation</div>${convo.map(makeC).join('')}`:''}
-        <div class="section-header">Followed Up</div>
-        <div class="scroll">${followed.map(makeC).join('')||'<div style="color:#4A5568;padding:16px;font-size:11px">None.</div>'}</div>
-      </div>
-      <div class="card">
-        <div class="card-label">${passed.length} passed</div>
-        <div class="card-title serif">Passed</div>
-        <div class="scroll">${passed.map(makeC).join('')||'<div style="color:#4A5568;padding:16px;font-size:11px">None.</div>'}</div>
-      </div>
-    </div>`;
-}
-
-function render(){
-  renderFilterBar();
-  renderKPIs();
-  if(currentTab==='pipeline') renderPipeline();
-  else if(currentTab==='followups') renderFollowups();
-  else if(currentTab==='signed') renderSigned();
-  else if(currentTab==='passed') renderPassed();
-  else if(currentTab==='cold') renderCold();
-}
-
-setInterval(()=>{
-  const n=new Date();
-  document.getElementById('clock').textContent=n.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-  document.getElementById('dateLbl').textContent=n.toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'});
-},1000);
-document.getElementById('clock').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-document.getElementById('dateLbl').textContent=new Date().toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'});
-render();
 </script>
 </body>
 </html>
