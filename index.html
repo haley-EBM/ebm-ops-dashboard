@@ -3,436 +3,927 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Emily Blair Media — Operations Dashboard</title>
+<title>EBM Internal Ops</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:#0B0E14;color:#D4CDBE;font-family:monospace;min-height:100vh}
-::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:#0B0E14}::-webkit-scrollbar-thumb{background:#1E2630;border-radius:2px}
-.serif{font-family:Georgia,serif}
-.header{background:#13181F;border-bottom:1px solid #1E2630;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
-.logo{width:28px;height:28px;background:#C9A84C;border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-weight:700;color:#0B0E14;font-size:13px;flex-shrink:0}
-.period-toggle{display:flex;gap:3px;background:#0B0E14;border-radius:6px;padding:3px;border:1px solid #1E2630}
-.period-btn{background:none;border:none;cursor:pointer;padding:5px 12px;border-radius:4px;font-size:10px;color:#4A5568;font-family:monospace;transition:all 0.15s}
-.period-btn.active{background:#C9A84C;color:#0B0E14;font-weight:bold}
-.tabs{display:flex;gap:16px}
-.tab-btn{background:none;border:none;border-bottom:1px solid transparent;cursor:pointer;padding:4px 0;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:#4A5568;font-family:monospace}
-.tab-btn.active{color:#C9A84C;border-bottom-color:#C9A84C}
-.pod-bar{background:rgba(19,24,31,0.95);border-bottom:1px solid #1E2630;padding:7px 24px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.pod-btn{background:none;border:1px solid #1E2630;border-radius:4px;cursor:pointer;padding:3px 10px;font-size:9px;letter-spacing:0.08em;color:#4A5568;text-transform:uppercase;font-family:monospace;transition:all 0.15s}
-.content{padding:20px 24px}
-.alert{background:rgba(224,91,91,0.07);border:1px solid rgba(224,91,91,0.25);border-radius:6px;padding:8px 14px;margin-bottom:16px;font-size:10px;color:#E05B5B;display:flex;gap:14px;flex-wrap:wrap}
-.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px}
-.kpi{background:#13181F;border:1px solid #1E2630;border-radius:8px;padding:16px 18px;position:relative;overflow:hidden}
-.kpi-bar{position:absolute;top:0;left:0;right:0;height:2px}
-.kpi-label{font-size:9px;color:#4A5568;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:6px}
-.kpi-value{font-size:28px;color:#F5EDD6;line-height:1;margin-bottom:4px}
-.kpi-sub{font-size:9px;color:#4A5568}
-.roster-strip{background:#13181F;border:1px solid #1E2630;border-radius:8px;padding:12px 16px;margin-bottom:16px}
-.roster-label{font-size:9px;color:#4A5568;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px}
-.roster-pills{display:flex;flex-wrap:wrap;gap:6px}
-.pill{display:flex;align-items:center;gap:6px;padding:5px 10px;background:#0B0E14;border-radius:20px;border:1px solid transparent}
-.pill-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
-.pill-name{font-size:10px}
-.pill-tag{font-size:8px;opacity:0.8}
-.pill-retainer{font-size:9px;color:#4A5568}
-.two-col{display:grid;grid-template-columns:1.1fr 1fr;gap:18px}
-.card{background:#13181F;border:1px solid #1E2630;border-radius:8px;padding:18px}
-.card-label{font-size:9px;color:#4A5568;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px}
-.card-title{font-size:18px;color:#F5EDD6;margin-bottom:14px}
-.feed-scroll{display:flex;flex-direction:column;gap:7px;max-height:560px;overflow-y:auto}
-.feed-item{padding:9px 11px;background:#0B0E14;border-radius:5px}
-.feed-top{display:flex;justify-content:space-between;margin-bottom:2px;align-items:center}
-.feed-outlet{font-size:11px;font-weight:bold}
-.feed-meta{display:flex;align-items:center;gap:6px}
-.email-tag{font-size:8px;color:#4A5568;padding:1px 4px;background:#1E2630;border-radius:2px}
-.feed-date{font-size:9px;color:#4A5568}
-.feed-headline{font-size:10px;color:#D4CDBE;line-height:1.4;margin-bottom:3px}
-.feed-bottom{display:flex;justify-content:space-between;align-items:center}
-.feed-client{font-size:9px;padding:1px 5px;background:#1E2630;border-radius:3px;color:#4A5568}
-.uvm{font-size:9px;color:#4ECBA0}
-.no-data{padding:20px;color:#4A5568;font-size:11px;text-align:center}
-.cov-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
-.hit-row{display:flex;align-items:center;gap:10px;padding:9px 12px;background:#0B0E14;border-radius:6px;margin-bottom:7px}
-.client-pod-section{margin-bottom:14px}
-.client-pod-header{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:6px}
-.client-row{padding:8px 11px;background:#0B0E14;border-radius:5px;display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
-.special-tag{font-size:8px;margin-left:8px;padding:1px 5px;background:rgba(91,224,212,0.12);border-radius:3px;letter-spacing:0.08em;color:#5BE0D4}
-.rev-pod{padding:12px 14px;background:#0B0E14;border-radius:6px;margin-bottom:10px}
-.rev-3col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px}
-.rev-bar-bg{height:3px;background:#1E2630;border-radius:2px}
-.rev-bar-fill{height:100%;border-radius:2px}
-.rev-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #1E2630}
-.goal-box{margin-top:16px;padding:12px;background:#0B0E14;border-radius:6px;border:1px solid #1E2630}
+:root {
+  --bg: #0a0a0c;
+  --surface: #111115;
+  --surface2: #1a1a20;
+  --surface3: #22222a;
+  --border: #2a2a35;
+  --text: #e8e8f0;
+  --muted: #6b6b80;
+  --accent: #c8a96e;
+  --accent2: #7b68ee;
+  --red: #e05555;
+  --green: #4caf82;
+  --yellow: #e0a84a;
+  --blue: #5599dd;
+  --creator: #9b72cf;
+  --bf: #e07090;
+  --athlete: #4db38a;
+  --entertainment: #e09050;
+  --brands: #5599dd;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; min-height: 100vh; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ALERTS */
+.alerts-bar {
+  background: linear-gradient(90deg, #3a1515 0%, #2a1a0a 50%, #1a1a3a 100%);
+  border-bottom: 1px solid #4a2020;
+  padding: 8px 24px;
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  font-size: 12px;
+}
+.alert-label { color: var(--red); font-weight: 700; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
+.alert-chip {
+  background: rgba(224,85,85,0.12);
+  border: 1px solid rgba(224,85,85,0.3);
+  border-radius: 4px;
+  padding: 2px 8px;
+  color: #f09090;
+  white-space: nowrap;
+  cursor: default;
+}
+.alert-chip.today { background: rgba(224,85,85,0.25); border-color: rgba(224,85,85,0.6); color: var(--red); font-weight: 600; }
+.alert-chip.tomorrow { background: rgba(224,160,74,0.18); border-color: rgba(224,160,74,0.4); color: var(--yellow); font-weight: 600; }
+
+/* HEADER */
+header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 24px; border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-mark { 
+  width: 32px; height: 32px; background: var(--accent); border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 13px; color: #0a0a0c; letter-spacing: -0.02em;
+}
+.logo-text { font-weight: 600; font-size: 15px; color: var(--text); }
+.logo-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.header-right { display: flex; align-items: center; gap: 16px; }
+.updated-at { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+/* TIME TOGGLE */
+.time-toggle {
+  display: flex; background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 6px; overflow: hidden;
+}
+.time-btn {
+  padding: 5px 12px; font-size: 11px; font-weight: 500; cursor: pointer;
+  background: none; border: none; color: var(--muted); transition: all 0.15s;
+  font-family: 'DM Sans', sans-serif;
+}
+.time-btn.active { background: var(--surface3); color: var(--text); }
+
+/* POD FILTER */
+.pod-filter {
+  display: flex; gap: 8px; padding: 12px 24px;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  align-items: center; flex-wrap: wrap;
+}
+.pod-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-right: 4px; }
+.pod-btn {
+  padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500;
+  cursor: pointer; border: 1.5px solid transparent; transition: all 0.15s;
+  background: var(--surface2); color: var(--muted);
+  font-family: 'DM Sans', sans-serif;
+}
+.pod-btn.active { color: var(--text); }
+.pod-btn[data-pod="all"].active { border-color: var(--accent); color: var(--accent); }
+.pod-btn[data-pod="creator"].active { border-color: var(--creator); background: rgba(155,114,207,0.1); color: var(--creator); }
+.pod-btn[data-pod="bf"].active { border-color: var(--bf); background: rgba(224,112,144,0.1); color: var(--bf); }
+.pod-btn[data-pod="athlete"].active { border-color: var(--athlete); background: rgba(77,179,138,0.1); color: var(--athlete); }
+.pod-btn[data-pod="entertainment"].active { border-color: var(--entertainment); background: rgba(224,144,80,0.1); color: var(--entertainment); }
+.pod-btn[data-pod="brands"].active { border-color: var(--brands); background: rgba(85,153,221,0.1); color: var(--brands); }
+
+/* ROSTER STRIP */
+.roster-strip {
+  background: var(--surface2); border-bottom: 1px solid var(--border);
+  padding: 8px 24px; display: none; flex-wrap: wrap; gap: 6px;
+  animation: slideDown 0.15s ease;
+}
+.roster-strip.show { display: flex; }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+.roster-chip {
+  font-size: 11px; padding: 3px 8px; border-radius: 3px;
+  background: var(--surface3); border: 1px solid var(--border);
+  color: var(--text);
+}
+.roster-chip span { color: var(--muted); margin-left: 4px; }
+
+/* TABS */
+.tabs { display: flex; background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; }
+.tab { padding: 12px 16px; font-size: 13px; font-weight: 500; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; transition: all 0.15s; }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* CONTENT */
+.content { padding: 20px 24px; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* KPI ROW */
+.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.kpi-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 14px 16px;
+}
+.kpi-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; }
+.kpi-value { font-size: 22px; font-weight: 700; color: var(--text); font-family: 'DM Mono', monospace; }
+.kpi-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+.kpi-value.green { color: var(--green); }
+.kpi-value.accent { color: var(--accent); }
+.kpi-value.yellow { color: var(--yellow); }
+
+/* GRID 2 COL */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+@media (max-width: 900px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+/* SECTION CARDS */
+.section-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  overflow: hidden;
+}
+.card-header {
+  padding: 12px 16px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.card-title { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.card-count { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+/* HIT LIST */
+.hit-list { padding: 8px 0; }
+.hit-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 8px 16px; border-bottom: 1px solid var(--border); transition: background 0.1s;
+}
+.hit-item:last-child { border-bottom: none; }
+.hit-item:hover { background: var(--surface2); }
+.hit-rank { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; width: 20px; flex-shrink: 0; }
+.hit-name { font-weight: 500; font-size: 13px; flex: 1; }
+.hit-count {
+  font-size: 11px; font-family: 'DM Mono', monospace;
+  background: var(--surface3); border: 1px solid var(--border);
+  border-radius: 4px; padding: 2px 7px; color: var(--accent);
+}
+.hit-pod { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+/* COVERAGE FEED */
+.feed-item {
+  padding: 10px 16px; border-bottom: 1px solid var(--border);
+  display: grid; grid-template-columns: 90px 1fr 80px 60px;
+  gap: 12px; align-items: center;
+  transition: background 0.1s;
+}
+.feed-item:hover { background: var(--surface2); }
+.feed-item:last-child { border-bottom: none; }
+.feed-date { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
+.feed-headline { font-size: 12px; line-height: 1.4; color: var(--text); }
+.feed-headline a { color: var(--text); }
+.feed-headline a:hover { color: var(--accent); }
+.feed-outlet { font-size: 11px; color: var(--muted); }
+.feed-client { font-size: 11px; }
+.feed-type { font-size: 10px; color: var(--muted); background: var(--surface3); border-radius: 3px; padding: 2px 5px; white-space: nowrap; }
+
+/* CLIENT TABLE */
+.client-table { width: 100%; border-collapse: collapse; }
+.client-table th {
+  text-align: left; padding: 8px 12px; font-size: 10px; font-weight: 600;
+  color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em;
+  border-bottom: 1px solid var(--border); background: var(--surface2);
+}
+.client-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); font-size: 12px; }
+.client-table tr:hover td { background: var(--surface2); }
+.client-table tr:last-child td { border-bottom: none; }
+.status-badge {
+  font-size: 10px; padding: 2px 7px; border-radius: 3px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.status-active { background: rgba(76,175,130,0.15); color: var(--green); border: 1px solid rgba(76,175,130,0.3); }
+.status-departing { background: rgba(224,85,85,0.15); color: var(--red); border: 1px solid rgba(224,85,85,0.3); }
+.status-pb { background: rgba(200,169,110,0.12); color: var(--accent); border: 1px solid rgba(200,169,110,0.3); }
+.pod-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.retainer { font-family: 'DM Mono', monospace; font-size: 12px; }
+.flag-tag { font-size: 10px; padding: 1px 5px; border-radius: 2px; margin-left: 4px; background: rgba(123,104,238,0.15); color: var(--accent2); border: 1px solid rgba(123,104,238,0.3); }
+
+/* REVENUE TABLE */
+.rev-table { width: 100%; border-collapse: collapse; }
+.rev-table th { text-align: left; padding: 8px 12px; font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid var(--border); background: var(--surface2); }
+.rev-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
+.rev-table tr.total td { font-weight: 700; background: var(--surface2); color: var(--text); }
+.rev-table tr:hover td { background: rgba(255,255,255,0.02); }
+.money { font-family: 'DM Mono', monospace; }
+.pct-bar { display: flex; align-items: center; gap: 8px; }
+.pct-track { flex: 1; height: 4px; background: var(--surface3); border-radius: 2px; overflow: hidden; }
+.pct-fill { height: 100%; border-radius: 2px; transition: width 0.4s ease; }
+
+/* OPEN OPPS */
+.opps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 900px) { .opps-grid { grid-template-columns: 1fr; } }
+.opp-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.opp-header { padding: 10px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+.opp-pod-label { font-size: 11px; font-weight: 700; }
+.opp-ae { font-size: 11px; color: var(--muted); }
+.opp-body { padding: 10px 14px; }
+.opp-section-title { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin: 8px 0 4px; }
+.opp-item { font-size: 12px; color: var(--text); padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; gap: 6px; }
+.opp-item:last-child { border-bottom: none; }
+.opp-client { font-weight: 500; color: var(--accent); min-width: 80px; font-size: 11px; }
+.opp-detail { color: var(--muted); font-size: 11px; }
+
+/* SECTION TITLE */
+.section-title { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 12px; }
+
+/* SCROLLABLE */
+.scrollable { max-height: 420px; overflow-y: auto; }
+.scrollable::-webkit-scrollbar { width: 4px; }
+.scrollable::-webkit-scrollbar-track { background: var(--surface); }
+.scrollable::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div style="display:flex;align-items:center;gap:10px">
-    <div class="logo">E</div>
+<!-- DEPARTURE ALERTS -->
+<div class="alerts-bar">
+  <span class="alert-label">⚡ Departures</span>
+  <span class="alert-chip today">📌 Purr Studio / Madison Woolley — Final Day TODAY (5/28)</span>
+  <span class="alert-chip tomorrow">⚠️ Shoshanna Raven — Final Day TOMORROW (5/29)</span>
+  <span class="alert-chip">Paige Lindgren — 6/3</span>
+  <span class="alert-chip">Osier — 6/11</span>
+  <span class="alert-chip">Donni Davy — 6/12</span>
+  <span class="alert-chip">Kai Stone — 6/16</span>
+  <span class="alert-chip">Westlake Dermatology — 6/18</span>
+  <span class="alert-chip">Susan Holmes McKagan — 7/1</span>
+  <span class="alert-chip" style="opacity:0.6; text-decoration: line-through;">Cassidy Montalvo — departed 5/25</span>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div class="logo-mark">EM</div>
     <div>
-      <div class="serif" style="font-size:13px;color:#F5EDD6;font-weight:700">Emily Blair Media</div>
-      <div style="font-size:9px;color:#4A5568;letter-spacing:0.1em;text-transform:uppercase">Operations Dashboard</div>
+      <div class="logo-text">Emily Blair Media</div>
+      <div class="logo-sub">Internal Operations Dashboard</div>
     </div>
   </div>
-  <div class="period-toggle">
-    <button class="period-btn" onclick="setPeriod('week')">This Week</button>
-    <button class="period-btn active" onclick="setPeriod('month')">This Month</button>
-    <button class="period-btn" onclick="setPeriod('all')">All Time</button>
-  </div>
-  <div style="display:flex;gap:16px;align-items:center">
-    <div class="tabs">
-      <button class="tab-btn active" onclick="setTab('overview')">Overview</button>
-      <button class="tab-btn" onclick="setTab('coverage')">Coverage</button>
-      <button class="tab-btn" onclick="setTab('clients')">Clients</button>
-      <button class="tab-btn" onclick="setTab('revenue')">Revenue</button>
+  <div class="header-right">
+    <div class="updated-at">Updated: Thu May 28, 2026 · Live from Drive + Gmail</div>
+    <div class="time-toggle">
+      <button class="time-btn" onclick="setTime('week',this)">This Week</button>
+      <button class="time-btn active" onclick="setTime('month',this)">This Month</button>
+      <button class="time-btn" onclick="setTime('all',this)">All Time</button>
     </div>
-    <div style="border-left:1px solid #1E2630;padding-left:16px;text-align:right">
-      <div class="serif" style="font-size:15px;color:#F5EDD6" id="clock"></div>
-      <div style="font-size:9px;color:#4A5568" id="dateLbl"></div>
+  </div>
+</header>
+
+<!-- POD FILTER -->
+<div class="pod-filter">
+  <span class="pod-label">Pod:</span>
+  <button class="pod-btn active" data-pod="all" onclick="setPod('all',this)">All</button>
+  <button class="pod-btn" data-pod="creator" onclick="setPod('creator',this)">🟣 Creator</button>
+  <button class="pod-btn" data-pod="bf" onclick="setPod('bf',this)">🩷 Beauty &amp; Fashion</button>
+  <button class="pod-btn" data-pod="athlete" onclick="setPod('athlete',this)">🟢 Athlete &amp; Fitness</button>
+  <button class="pod-btn" data-pod="entertainment" onclick="setPod('entertainment',this)">🟠 Entertainment</button>
+  <button class="pod-btn" data-pod="brands" onclick="setPod('brands',this)">🔵 Brands</button>
+</div>
+
+<!-- ROSTER STRIP -->
+<div class="roster-strip" id="rosterStrip"></div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" onclick="setTab('overview',this)">Overview</div>
+  <div class="tab" onclick="setTab('coverage',this)">Coverage</div>
+  <div class="tab" onclick="setTab('clients',this)">Clients</div>
+  <div class="tab" onclick="setTab('revenue',this)">Revenue</div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+<!-- ====== OVERVIEW ====== -->
+<div class="tab-panel active" id="tab-overview">
+  <div class="kpi-row" id="kpi-row">
+    <!-- KPIs injected by JS -->
+  </div>
+  <div class="grid-2">
+    <div class="section-card">
+      <div class="card-header">
+        <span class="card-title">Hit Leaderboard</span>
+        <span class="card-count" id="leaderboard-period">May 2026</span>
+      </div>
+      <div class="hit-list scrollable" id="hit-list"></div>
+    </div>
+    <div class="section-card">
+      <div class="card-header">
+        <span class="card-title">Coverage Feed</span>
+        <span class="card-count">Week of 5/22</span>
+      </div>
+      <div class="scrollable" id="coverage-feed"></div>
+    </div>
+  </div>
+  <div style="margin-top:16px;">
+    <div class="section-card">
+      <div class="card-header"><span class="card-title">Open Opportunities — Week of 5/22</span></div>
+      <div class="opps-grid" style="padding:16px;" id="opps-grid"></div>
     </div>
   </div>
 </div>
 
-<div class="pod-bar" id="podBar"></div>
-<div class="content">
-  <div class="alert">
-    <span>⚠ <strong>Talent departing:</strong> Shoshanna Raven 5/29 · Paige Lindgren 6/3 · Donni Davy 6/12 · Kai Stone 6/16 · Susan Holmes McKagan 7/1</span>
-    <span style="color:rgba(224,91,91,0.4)">|</span>
-    <span><strong>Brands departing:</strong> Madison Woolley 5/28 · Osier 6/11 · Westlake Dermatology 6/18</span>
+<!-- ====== COVERAGE ====== -->
+<div class="tab-panel" id="tab-coverage">
+  <p class="section-title" style="margin-bottom:16px;">All Live Press · May 2026</p>
+  <div class="section-card">
+    <div class="scrollable">
+      <table class="client-table" id="coverage-table">
+        <thead><tr>
+          <th>Date</th><th>Client</th><th>Outlet</th><th>Headline</th><th>Type</th><th>Pod</th>
+        </tr></thead>
+        <tbody id="coverage-tbody"></tbody>
+      </table>
+    </div>
   </div>
-  <div class="kpis" id="kpis"></div>
-  <div id="rosterStrip"></div>
-  <div id="tabContent"></div>
 </div>
+
+<!-- ====== CLIENTS ====== -->
+<div class="tab-panel" id="tab-clients">
+  <div class="grid-2" style="margin-bottom:16px;" id="client-counts-grid"></div>
+  <div class="section-card">
+    <div class="card-header">
+      <span class="card-title">Full Roster</span>
+      <span class="card-count" id="client-count-label"></span>
+    </div>
+    <div class="scrollable">
+      <table class="client-table">
+        <thead><tr>
+          <th>Client</th><th>Pod</th><th>Retainer</th><th>Status</th><th>Contract</th><th>Notes</th>
+        </tr></thead>
+        <tbody id="client-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ====== REVENUE ====== -->
+<div class="tab-panel" id="tab-revenue">
+  <div class="kpi-row">
+    <div class="kpi-card"><div class="kpi-label">Monthly Revenue</div><div class="kpi-value accent">$223,745</div><div class="kpi-sub">Talent + Brands + Socials</div></div>
+    <div class="kpi-card"><div class="kpi-label">Net Profit</div><div class="kpi-value green">$43,267</div><div class="kpi-sub">After all expenses</div></div>
+    <div class="kpi-card"><div class="kpi-label">Net Margin</div><div class="kpi-value green">19.3%</div><div class="kpi-sub">↑ from prior period</div></div>
+    <div class="kpi-card"><div class="kpi-label">Payroll Cost</div><div class="kpi-value yellow">$121,418</div><div class="kpi-sub">54.3% of revenue</div></div>
+    <div class="kpi-card"><div class="kpi-label">Total Opex</div><div class="kpi-value" style="color:var(--muted)">$73,000</div><div class="kpi-sub">Other operating expenses</div></div>
+    <div class="kpi-card"><div class="kpi-label">Total Expenses</div><div class="kpi-value" style="color:var(--muted)">$180,478</div><div class="kpi-sub">Payroll + Opex overhead</div></div>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:16px;">
+    <div class="section-card">
+      <div class="card-header"><span class="card-title">Pod P&amp;L — Talent</span></div>
+      <table class="rev-table">
+        <thead><tr><th>Pod</th><th>Lead</th><th>Clients</th><th>Revenue</th><th>Cost</th><th>Profit</th><th>Margin</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="pod-dot" style="background:var(--creator)"></span>Creator</td>
+            <td style="color:var(--muted)">Jenna</td>
+            <td>6</td>
+            <td class="money">$27,500</td>
+            <td class="money" style="color:var(--muted)">$15,530</td>
+            <td class="money green">$11,970</td>
+            <td>
+              <div class="pct-bar">43.5%
+                <div class="pct-track"><div class="pct-fill" style="width:43.5%;background:var(--creator)"></div></div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><span class="pod-dot" style="background:var(--bf)"></span>Beauty &amp; Fashion</td>
+            <td style="color:var(--muted)">Alexis</td>
+            <td>5</td>
+            <td class="money">$23,000</td>
+            <td class="money" style="color:var(--muted)">$15,947</td>
+            <td class="money" style="color:var(--yellow)">$7,054</td>
+            <td>
+              <div class="pct-bar">30.7%
+                <div class="pct-track"><div class="pct-fill" style="width:30.7%;background:var(--bf)"></div></div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><span class="pod-dot" style="background:var(--athlete)"></span>Athlete &amp; Fitness</td>
+            <td style="color:var(--muted)">Sophia</td>
+            <td>9</td>
+            <td class="money">$34,000</td>
+            <td class="money" style="color:var(--muted)">$10,218</td>
+            <td class="money green">$23,782</td>
+            <td>
+              <div class="pct-bar">70.0%
+                <div class="pct-track"><div class="pct-fill" style="width:70%;background:var(--athlete)"></div></div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><span class="pod-dot" style="background:var(--entertainment)"></span>Entertainment</td>
+            <td style="color:var(--muted)">Julia</td>
+            <td>6</td>
+            <td class="money">$31,000</td>
+            <td class="money" style="color:var(--muted)">$11,927</td>
+            <td class="money green">$19,074</td>
+            <td>
+              <div class="pct-bar">61.5%
+                <div class="pct-track"><div class="pct-fill" style="width:61.5%;background:var(--entertainment)"></div></div>
+              </div>
+            </td>
+          </tr>
+          <tr class="total">
+            <td colspan="2">TOTAL TALENT</td>
+            <td>26</td>
+            <td class="money">$115,500</td>
+            <td class="money">$53,621</td>
+            <td class="money" style="color:var(--green)">$61,879</td>
+            <td>53.6%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="section-card">
+      <div class="card-header"><span class="card-title">Revenue Breakdown</span></div>
+      <table class="rev-table">
+        <thead><tr><th>Department</th><th>Monthly Rev</th><th>Annual</th><th>% of Total</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="pod-dot" style="background:var(--accent)"></span>Talent</td>
+            <td class="money">$144,250</td>
+            <td class="money" style="color:var(--muted)">$1,731,000</td>
+            <td>
+              <div class="pct-bar">64.5%
+                <div class="pct-track"><div class="pct-fill" style="width:64.5%;background:var(--accent)"></div></div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><span class="pod-dot" style="background:var(--brands)"></span>Brands</td>
+            <td class="money">$76,075</td>
+            <td class="money" style="color:var(--muted)">$912,900</td>
+            <td>
+              <div class="pct-bar">34.0%
+                <div class="pct-track"><div class="pct-fill" style="width:34%;background:var(--brands)"></div></div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><span class="pod-dot" style="background:var(--creator)"></span>Socials</td>
+            <td class="money">$3,420</td>
+            <td class="money" style="color:var(--muted)">$41,040</td>
+            <td>
+              <div class="pct-bar">1.5%
+                <div class="pct-track"><div class="pct-fill" style="width:1.5%;background:var(--creator)"></div></div>
+              </div>
+            </td>
+          </tr>
+          <tr class="total">
+            <td>GRAND TOTAL</td>
+            <td class="money" style="color:var(--accent)">$223,745</td>
+            <td class="money" style="color:var(--muted)">$2,684,940</td>
+            <td>100%</td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="padding:16px; border-top: 1px solid var(--border);">
+        <table class="rev-table">
+          <thead><tr><th>Scenario</th><th>Revenue</th><th>Opex</th><th>Overhead</th><th>P/L</th></tr></thead>
+          <tbody>
+            <tr><td>Current</td><td class="money">$223,745</td><td class="money">$73,000</td><td class="money">$107,478</td><td class="money green">+$43,267</td></tr>
+            <tr><td style="color:var(--muted)">$200K scenario</td><td class="money" style="color:var(--muted)">$200,000</td><td class="money" style="color:var(--muted)">$73,000</td><td class="money" style="color:var(--muted)">$107,478</td><td class="money" style="color:var(--yellow)">+$19,522</td></tr>
+            <tr><td style="color:var(--muted)">$180K scenario</td><td class="money" style="color:var(--muted)">$180,000</td><td class="money" style="color:var(--muted)">$73,000</td><td class="money" style="color:var(--muted)">$107,478</td><td class="money" style="color:var(--red)">-$478</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card" style="margin-bottom:16px;">
+    <div class="card-header"><span class="card-title">Commission Payments (Monthly)</span></div>
+    <table class="rev-table">
+      <thead><tr><th>Brand Client</th><th>Recipient</th><th>Commission</th><th>Original Rate</th></tr></thead>
+      <tbody>
+        <tr><td>Shop The Sample</td><td>Victoria</td><td class="money" style="color:var(--accent)">$3,000</td><td class="money" style="color:var(--muted)">$15,000</td></tr>
+        <tr><td>Kim Gravel</td><td>Vic</td><td class="money" style="color:var(--accent)">$1,000</td><td class="money" style="color:var(--muted)">$6,000</td></tr>
+        <tr><td>Terry Dubrow</td><td>Vic</td><td class="money" style="color:var(--accent)">$1,000</td><td class="money" style="color:var(--muted)">$6,000</td></tr>
+        <tr><td>Osier (departing 6/11)</td><td>Juliette</td><td class="money" style="color:var(--muted)">$475</td><td class="money" style="color:var(--muted)">$4,500</td></tr>
+        <tr><td>Auri Nutrition</td><td>Matt</td><td class="money" style="color:var(--accent)">$750</td><td class="money" style="color:var(--muted)">$5,000</td></tr>
+        <tr><td>Spill Sesh (Kristi Cook)</td><td>Julia</td><td class="money" style="color:var(--accent)">$500</td><td class="money" style="color:var(--muted)">$5,000</td></tr>
+        <tr><td>Shelton Wilder</td><td>Katie</td><td class="money" style="color:var(--accent)">$500</td><td class="money" style="color:var(--muted)">$5,000</td></tr>
+        <tr><td>Sophie Saint Marjan</td><td>Anne</td><td class="money" style="color:var(--accent)">$500</td><td class="money" style="color:var(--muted)">$5,000</td></tr>
+        <tr><td>Kat Velasco</td><td>Lexi Pulling</td><td class="money" style="color:var(--accent)">$500</td><td class="money" style="color:var(--muted)">$5,000</td></tr>
+        <tr><td>Melinda Melrose</td><td>Anita</td><td class="money" style="color:var(--accent)">$500</td><td class="money" style="color:var(--muted)">$5,000</td></tr>
+        <tr><td>Olivia Ponton</td><td>Anne</td><td class="money" style="color:var(--accent)">$450</td><td class="money" style="color:var(--muted)">$4,500</td></tr>
+        <tr class="total"><td colspan="2">Total Monthly Commissions</td><td class="money" style="color:var(--red)">$4,675</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div><!-- /content -->
 
 <script>
-const C={gold:'#C9A84C',cream:'#F5EDD6',muted:'#4A5568',green:'#4ECBA0',red:'#E05B5B',blue:'#5B9CE0',purple:'#9B8FE0',orange:'#E09B5B',teal:'#5BE0D4',bg:'#0B0E14',surface:'#13181F',border:'#1E2630',text:'#D4CDBE'};
-const PC={'Entertainment':C.orange,'Beauty & Fashion':C.purple,'Athlete & Fitness':C.gold,'Creator':C.teal,'Brands':C.blue};
-const pc=p=>PC[p]||C.gold;
+// ===== DATA =====
+const PODS = {
+  creator: { label: 'Creator', color: '#9b72cf' },
+  bf: { label: 'B&F', color: '#e07090' },
+  athlete: { label: 'Athlete & Fitness', color: '#4db38a' },
+  entertainment: { label: 'Entertainment', color: '#e09050' },
+  brands: { label: 'Brands', color: '#5599dd' },
+};
 
-const TALENT=[
-  {name:'Spencer Pratt',pod:'Entertainment',retainer:7500,status:'Active'},
-  {name:'Kim Gravel',pod:'Entertainment',retainer:5000,status:'Active'},
-  {name:'Gia Giudice',pod:'Entertainment',retainer:5000,status:'Active'},
-  {name:'Spill Sesh',pod:'Entertainment',retainer:4500,status:'Active'},
-  {name:'QUICI MEDIA (Cara)',pod:'Entertainment',retainer:4500,status:'Active'},
-  {name:'Kat Velasco',pod:'Entertainment',retainer:4500,status:'Active'},
-  {name:'Heidi Montag',pod:'Entertainment',retainer:2500,status:'Departed',note:'Done'},
-  {name:'Donni Davy',pod:'Beauty & Fashion',retainer:5000,status:'Departing',note:'Leaves 6/12'},
-  {name:'Terry Dubrow',pod:'Beauty & Fashion',retainer:5000,status:'Active'},
-  {name:'Amanda Frances',pod:'Beauty & Fashion',retainer:5000,status:'Active'},
-  {name:'Allie Eklund',pod:'Beauty & Fashion',retainer:4500,status:'Active'},
-  {name:'Melinda Melrose',pod:'Beauty & Fashion',retainer:4500,status:'Active'},
-  {name:'Miranda McKeon',pod:'Beauty & Fashion',retainer:4000,status:'Active'},
-  {name:'Susan Holmes McKagan',pod:'Beauty & Fashion',retainer:5000,status:'Departing',note:'Leaves 7/1'},
-  {name:'UpDating',pod:'Beauty & Fashion',retainer:5000,status:'Active',type:'one-time',note:'One-time fee — not recurring'},
-  {name:'Harvard Bold',pod:'Beauty & Fashion',retainer:0,status:'Active',type:'pro-bono',note:'Pro bono — crisis sim / speaker program'},
-  {name:'Katie Austin',pod:'Athlete & Fitness',retainer:4000,status:'Active'},
-  {name:'Gabby George',pod:'Athlete & Fitness',retainer:5000,status:'Active'},
-  {name:'Chase DeMoor',pod:'Athlete & Fitness',retainer:4500,status:'Active'},
-  {name:'Kail Lowry',pod:'Athlete & Fitness',retainer:4500,status:'Active'},
-  {name:'Carson Roney',pod:'Athlete & Fitness',retainer:4500,status:'Active'},
-  {name:'TJ Palma',pod:'Athlete & Fitness',retainer:4500,status:'Active'},
-  {name:'Aditi Shah',pod:'Athlete & Fitness',retainer:4000,status:'Active'},
-  {name:'Millennial Entertainment',pod:'Athlete & Fitness',retainer:3000,status:'Active'},
-  {name:'Modeliste Magazine',pod:'Athlete & Fitness',retainer:0,status:'Active',note:'Per booking'},
-  {name:'Violet Witchel',pod:'Creator',retainer:5000,status:'Active'},
-  {name:'Shelton Wilder',pod:'Creator',retainer:4500,status:'Active'},
-  {name:'G&B Digital Mgmt',pod:'Creator',retainer:5000,status:'Active'},
-  {name:'Sophie Saint',pod:'Creator',retainer:4500,status:'Active'},
-  {name:'Jamie Milne',pod:'Creator',retainer:4500,status:'Active'},
-  {name:'Brittny Button',pod:'Creator',retainer:4000,status:'Active'},
-  {name:'Kai Stone',pod:'Creator',retainer:4250,status:'Departing',note:'Leaves 6/16'},
-  {name:'Paige Lindgren',pod:'Creator',retainer:5000,status:'Departing',note:'Leaves 6/3'},
-  {name:'Shoshanna Raven',pod:'Creator',retainer:5000,status:'Departing',note:'Final day 5/29'},
-  {name:'Cassidy Montalvo',pod:'Creator',retainer:4500,status:'Departed',note:'Left 5/25'},
+const CLIENTS = [
+  // TALENT - Active
+  { name: 'Spencer Pratt', pod: 'entertainment', retainer: 7500, status: 'active', contract: 'MTM', notes: 'LA Mayoral Campaign' },
+  { name: 'Shop The Sample', pod: 'brands', retainer: 12000, status: 'active', contract: '6 then MTM', notes: 'Victoria $3K commission' },
+  { name: 'Regen Therapy (Sanjiv Lal)', pod: 'brands', retainer: 8500, status: 'active', contract: '3 then MTM', notes: '' },
+  { name: 'Bell Boy', pod: 'brands', retainer: 7500, status: 'active', contract: 'MTM', notes: 'Caelynn Bell — EMBARGO 6/1' },
+  { name: 'Dolce Glow x Sunnee BAESkin', pod: 'brands', retainer: 6000, status: 'active', contract: '8 then MTM', notes: '' },
+  { name: 'Kim Gravel', pod: 'entertainment', retainer: 5000, status: 'active', contract: 'MTM', notes: 'Vic $1K commission' },
+  { name: 'Terry Dubrow', pod: 'bf', retainer: 5000, status: 'active', contract: '2 months', notes: 'Vic $1K commission' },
+  { name: 'Gia Giudice', pod: 'entertainment', retainer: 5000, status: 'active', contract: '3 then MTM', notes: '' },
+  { name: 'Violet Witchel', pod: 'creator', retainer: 5000, status: 'active', contract: '3 then MTM', notes: '' },
+  { name: 'Amanda Frances', pod: 'bf', retainer: 5000, status: 'active', contract: '6 then MTM', notes: '' },
+  { name: 'G&B Digital Management', pod: 'creator', retainer: 5000, status: 'active', contract: '6 then MTM', notes: '' },
+  { name: 'Gabby George', pod: 'athlete', retainer: 5000, status: 'active', contract: '6 then MTM', notes: '' },
+  { name: 'RedHanded', pod: 'brands', retainer: 5000, status: 'active', contract: '6 then MTM', notes: '' },
+  { name: 'Odd Muse / Aimee Smale', pod: 'brands', retainer: 5000, status: 'active', contract: '3 months', notes: '' },
+  { name: 'Danielle Cohn', pod: 'creator', retainer: 5000, status: 'pb', contract: 'PB', notes: 'Started 4/20/26' },
+  { name: 'Asante Madrigal', pod: 'creator', retainer: 5000, status: 'active', contract: '3 then MTM', notes: 'New sign — started 5/26/26' },
+  { name: 'Melinda Melrose', pod: 'bf', retainer: 4500, status: 'active', contract: '3 months', notes: 'Anita $500 commission' },
+  { name: 'Shelton Wilder', pod: 'creator', retainer: 4500, status: 'active', contract: '3 then MTM', notes: 'Katie $500 commission' },
+  { name: 'Chase DeMoor', pod: 'athlete', retainer: 4500, status: 'active', contract: '6 then MTM', notes: '' },
+  { name: 'Carson Roney', pod: 'athlete', retainer: 4500, status: 'active', contract: '3 then MTM', notes: '' },
+  { name: 'QUICI Media Holdings (Cara)', pod: 'entertainment', retainer: 4500, status: 'active', contract: '3 months', notes: '' },
+  { name: 'Sophie Saint Marjan', pod: 'creator', retainer: 4500, status: 'active', contract: 'MTM', notes: 'Anne $500 commission' },
+  { name: 'Jamie Milne', pod: 'creator', retainer: 4500, status: 'active', contract: 'MTM', notes: '' },
+  { name: 'Kat Velasco', pod: 'entertainment', retainer: 4500, status: 'active', contract: '3 months', notes: 'Lexi Pulling $500 commission' },
+  { name: 'Kail Lowry', pod: 'athlete', retainer: 4500, status: 'active', contract: '3 months', notes: '' },
+  { name: 'TJ Palma', pod: 'athlete', retainer: 4500, status: 'active', contract: '3 then MTM', notes: '' },
+  { name: 'Allie Eklund', pod: 'bf', retainer: 4500, status: 'active', contract: '3 then MTM', notes: '' },
+  { name: 'Spill Sesh (Kristi Cook)', pod: 'entertainment', retainer: 4500, status: 'active', contract: 'MTM', notes: 'Julia $500 commission' },
+  { name: 'Auri Nutrition', pod: 'brands', retainer: 4250, status: 'active', contract: '3 months', notes: 'Matt $750 commission' },
+  { name: 'Olivia Ponton', pod: 'brands', retainer: 4050, status: 'active', contract: '3 months', notes: 'Anne $450 commission' },
+  { name: 'Katie Austin', pod: 'athlete', retainer: 4000, status: 'active', contract: '12 months', notes: '' },
+  { name: 'Cameron Rogers', pod: 'brands', retainer: 4000, status: 'active', contract: '5 months', notes: 'Rate reduced from $4,500 on 3/15' },
+  { name: 'Miranda McKeon', pod: 'bf', retainer: 4000, status: 'active', contract: '6 then MTM', notes: '' },
+  { name: 'Brittny Button', pod: 'creator', retainer: 4000, status: 'active', contract: 'MTM', notes: '' },
+  { name: 'Aditi Shah', pod: 'athlete', retainer: 4000, status: 'active', contract: '3 months', notes: 'Intro rate' },
+  { name: 'Dripology', pod: 'brands', retainer: 0, status: 'active', contract: '12 months', notes: 'Rate TBD' },
+  { name: 'Millennial Entertainment', pod: 'athlete', retainer: 3000, status: 'active', contract: '3 then MTM', notes: '' },
+  { name: 'Modeliste Magazine', pod: 'athlete', retainer: 0, status: 'pb', contract: 'PB', notes: '$7,500 per cover client secured' },
+  // SOCIALS
+  { name: 'Tracey Shindler', pod: 'bf', retainer: 1620, status: 'active', contract: '3 months', notes: 'Socials · Katie Mason Stern $180 commission' },
+  { name: 'Danielle Rose Russell', pod: 'bf', retainer: 1800, status: 'active', contract: '3 months', notes: 'Socials' },
+  // DEPARTING
+  { name: 'Susan Holmes McKagan', pod: 'bf', retainer: 5000, status: 'departing', contract: '3 then MTM', notes: 'Pausing July 1 · UpDating one-time $5K' },
+  { name: 'Purr Studio / Madison Woolley', pod: 'brands', retainer: 8000, status: 'departing', contract: '6 then MTM', notes: '🔴 FINAL DAY TODAY 5/28' },
+  { name: 'Shoshanna Raven (Living Brave)', pod: 'creator', retainer: 5000, status: 'departing', contract: '3 then MTM', notes: '⚠️ Final day 5/29 (tomorrow)' },
+  { name: 'Paige Lindgren', pod: 'creator', retainer: 5000, status: 'departing', contract: '6 months', notes: 'Final day 6/3' },
+  { name: 'Donni Davy', pod: 'bf', retainer: 5000, status: 'departing', contract: 'A20 + 1 extension', notes: 'Final day 6/12' },
+  { name: 'Kai Stone', pod: 'creator', retainer: 4250, status: 'departing', contract: '3 months', notes: 'Final day 6/16' },
+  { name: 'Westlake Dermatology', pod: 'brands', retainer: 7500, status: 'departing', contract: 'MTM', notes: 'Final day 6/18' },
+  { name: 'Osier', pod: 'brands', retainer: 4275, status: 'departing', contract: '6 months', notes: 'Final day 6/11 · Juliette $475 commission' },
+  { name: 'Cassidy Montalvo', pod: 'creator', retainer: 4500, status: 'departing', contract: '3 then MTM', notes: 'Departed 5/25' },
 ];
 
-const BRANDS=[
-  {name:'Shop The Sample',retainer:12000,status:'Active'},
-  {name:'Bell Boy',retainer:7500,status:'Active'},
-  {name:'Westlake Dermatology',retainer:7500,status:'Departing',note:'Leaves 6/18'},
-  {name:'Dolce Glow / Sunnee BAEskin',retainer:6000,status:'Active'},
-  {name:'RedHanded',retainer:5000,status:'Active'},
-  {name:'Odd Muse',retainer:5000,status:'Active'},
-  {name:'Olivia Ponton',retainer:4050,status:'Active'},
-  {name:'Auri Nutrition',retainer:4250,status:'Active'},
-  {name:'Osier',retainer:4275,status:'Departing',note:'Leaves 6/11'},
-  {name:'Cameron Rogers',retainer:4000,status:'Active'},
-  {name:'Dripology',retainer:null,status:'Active'},
-  {name:'Regen Therapy',retainer:8500,status:'Active'},
-  {name:'Purr Studio / Madison Woolley',retainer:8000,status:'Departing',note:'Final day 5/28'},
+const COVERAGE = [
+  // Spencer Pratt (May 2026) - Entertainment
+  { date: '5/28', client: 'Spencer Pratt', outlet: 'NBCLA Conan Nolan', headline: 'Spencer Pratt talks LA homelessness, wildfires', type: 'Broadcast', pod: 'entertainment' },
+  { date: '5/27', client: 'Katie Austin', outlet: 'PEOPLE', headline: 'SI Swim Week Model Katie Austin Prepares for Her Sixth Year Hitting the Runway, at 6 Months Pregnant', url: 'https://people.com', type: 'Digital Feature', pod: 'athlete' },
+  { date: '5/27', client: 'Katie Austin', outlet: 'Daily Beast (syndicated)', headline: "Pregnant Bikini Model Says Her Belly Is the 'Best Accessory'", type: 'Digital Feature', pod: 'athlete' },
+  { date: '5/22', client: 'Violet Witchel', outlet: 'The Roam Report', headline: "Spilling the Beans: Why Violet Witchel's Meal Prep Secret is Taking Over the Internet", url: 'https://www.theroamreport.com/features/spilling-the-beans-why-violet-witchel-s-meal-prep-secret-is-taking-over-the-internet/', type: 'Digital Feature', pod: 'creator' },
+  { date: '5/22', client: 'Violet Witchel', outlet: 'CBS 19 News', headline: "Spilling the Beans: Why Violet Witchel's Meal Prep Secret is Taking Over the Internet (Syndicated)", type: 'Digital Feature', pod: 'creator' },
+  { date: '5/22', client: 'Sophie Saint Marjan', outlet: 'Supercar Blondie', headline: 'US woman restoring a Ferrari F40 after being inspired by the car from Ghostbusters sends message to all women', url: 'https://supercarblondie.com/sophie-saint-restoring-ferrari-f40-ghostsbusters-inspiration/', type: 'Digital Feature', pod: 'creator' },
+  { date: '5/22', client: 'Brittny Button', outlet: 'House Beautiful', headline: 'This $50 Design Upgrade Makes Your Home Look Way More Expensive', url: 'https://www.housebeautiful.com/design-inspiration/a71297454/design-upgrade-that-makes-your-home-look-more-expensive/', type: 'Digital Feature', pod: 'creator' },
+  { date: '5/22', client: 'Brittny Button', outlet: 'Yahoo Shopping', headline: 'This $50 Design Upgrade Makes Your Home Look Way More Expensive (Syndicated)', type: 'Digital Feature', pod: 'creator' },
+  { date: '5/22', client: 'Paige Lindgren', outlet: 'Bustle', headline: 'The Cycle Is A "Period Drink" That Alleviates Your Monthly Symptoms', url: 'https://www.bustle.com/wellness/the-cycle-period-drink-review-pms-pmdd-symptom-relief', type: 'Digital Feature', pod: 'creator' },
+  { date: '5/22', client: 'Paige Lindgren', outlet: 'It Girl Eats (Substack)', headline: "It Girl Eats: 'Sync & Savor' author, nutritionist, wellness creator Paige Lindgren", type: 'Feature', pod: 'creator' },
+  { date: '5/22', client: 'Anita Yokota', outlet: 'House Beautiful', headline: 'The Home Design Mistake Couples Fight About Most—and How to Fix It', url: 'https://www.housebeautiful.com/design-inspiration/a71339432/home-design-conflict-couples/', type: 'Digital Feature', pod: 'creator' },
+  { date: '5/22', client: 'Anita Yokota', outlet: 'NBC California Live (IG)', headline: 'Family therapist turned interior designer @anitayokota shared tips for mental health awareness month', url: 'https://www.instagram.com/p/DYkYk8gBw1O/', type: 'Social Coverage', pod: 'creator' },
+  { date: '5/22', client: 'Kai Stone', outlet: 'RED w/ Michelle Barone (TikTok + IG + iHeart)', headline: 'Kai Stone is on RED — multiple clips going viral', type: 'Podcast / Social', pod: 'creator' },
+  { date: '5/19', client: 'Katie Austin', outlet: 'Tamron Hall Show', headline: 'TV appearance', type: 'TV/Broadcast', pod: 'athlete' },
+  { date: '5/15', client: 'Katie Austin', outlet: 'Good Day New York', headline: 'TV appearance', type: 'TV/Broadcast', pod: 'athlete' },
+  { date: '5/15', client: 'Donni Davy', outlet: "Harper's Bazaar India", headline: "Character Study: Donni Davy breaks down the beauty psychology of Euphoria", type: 'Digital Feature', pod: 'bf' },
+  { date: '5/15', client: 'Donni Davy', outlet: "Harper's Bazaar India [PRINT]", headline: "Euphoria's makeup evolved into an influence of its own", type: 'Print Feature', pod: 'bf' },
+  { date: '5/11', client: 'Spencer Pratt', outlet: 'Dr. Phil (YouTube)', headline: "Spencer Pratt: His Mission to Save Los Angeles", type: 'Broadcast/Podcast', pod: 'entertainment' },
+  { date: '5/10', client: 'Spencer Pratt', outlet: 'NBCLA Conan Nolan (YouTube)', headline: "Why Spencer Pratt thinks he's like Barack Obama, whether he's 'MAGA'", type: 'Broadcast', pod: 'entertainment' },
+  { date: '5/8', client: 'Spencer Pratt', outlet: 'Off the Cupp with S.E. Cupp (iHeart/Apple)', headline: "From reality star 'villain' to mayoral hopeful", type: 'Podcast', pod: 'entertainment' },
+  { date: '5/7', client: 'Spencer Pratt', outlet: 'Adam Carolla Vlog (YouTube)', headline: 'WILD MALIBU UPDATE + Spencer Pratt Gives Adam Carolla a Tour of his RV', type: 'Social/Broadcast', pod: 'entertainment' },
+  { date: '5/5', client: 'Donni Davy', outlet: 'The Daily Beast', headline: 'Introvert With 540,000 Followers Shares Her Secret to Facing Your Fears', type: 'Digital Feature', pod: 'bf' },
+  { date: '5/5', client: 'Spencer Pratt', outlet: 'Ruthless Podcast (Fox) — multiple platforms', headline: 'DNC Humiliation + Spencer Pratt Joins the Progrum', type: 'Podcast', pod: 'entertainment' },
+  { date: '5/5', client: 'Spencer Pratt', outlet: 'The Unspeakeasy Podcast', headline: 'The Spencer Pratt Interview — Can Spencer Pratt Save Los Angeles?', type: 'Podcast', pod: 'entertainment' },
+  { date: '5/5', client: 'Spencer Pratt', outlet: 'The Real Deal', headline: "Inside Spencer Pratt's bid for Los Angeles mayor", type: 'Digital Feature', pod: 'entertainment' },
+  { date: '5/3', client: 'Spencer Pratt', outlet: 'NBC4/KVEA 52', headline: 'LIVE Mayoral Debate', type: 'Broadcast', pod: 'entertainment' },
+  { date: '5/1', client: 'Spencer Pratt', outlet: 'CBS LA + CBS News (multiple)', headline: 'Los Angeles Mayoral Race | Spencer Pratt + attack ad coverage', type: 'Broadcast', pod: 'entertainment' },
+  { date: '5/1', client: 'Katie Austin', outlet: 'Create and Cultivate', headline: 'Navigating Pregnancy While Being a Female Fitness Founder', type: 'Digital Feature', pod: 'athlete' },
 ];
 
-const HITS=[
-  {date:'2026-05-26',client:'Katie Austin',outlet:'PEOPLE',headline:'SI Swim Week: 6 Months Pregnant on Runway (Exclusive)',uvm:70645431,pod:'Athlete & Fitness',src:'tracker',url:'https://people.com/katie-austin-si-swim-search-2026'},
-  {date:'2026-05-26',client:'Olivia Ponton',outlet:'Page Six',headline:'Model & Podcast Host Olivia Ponton Shares Her Favorite Books',uvm:31500000,pod:'Brands',src:'tracker',url:'https://pagesix.com/2026/05/26/lifestyle/model-and-podcast-host-olivia-ponton-shares-her-favorite-books/'},
-  {date:'2026-05-26',client:'Spencer Pratt',outlet:'ABC7',headline:'Spencer Pratt claims homeless choose to be drug addicts',uvm:null,pod:'Entertainment',src:'tracker'},
-  {date:'2026-05-22',client:'Kat Velasco',outlet:'48 newswires',headline:"'Shutting Down Midtown' press release syndication blast",uvm:null,pod:'Entertainment',src:'tracker'},
-  {date:'2026-05-22',client:'Dripology',outlet:'Us Weekly',headline:'Hot Pics round-up',uvm:null,pod:'Brands',src:'tracker',url:'https://www.usmagazine.com/hot-pics/'},
-  {date:'2026-05-22',client:'Brittny Button',outlet:'House Beautiful',headline:'This $50 Design Upgrade Makes Your Home Look Way More Expensive',uvm:null,pod:'Creator',src:'email'},
-  {date:'2026-05-22',client:'Kai Stone',outlet:'RED w/ Michelle Barone',headline:'Multi-platform podcast rollout (TikTok x4, IG x5, iHeart)',uvm:null,pod:'Creator',src:'email'},
-  {date:'2026-05-22',client:'Anita Yokota',outlet:'House Beautiful',headline:'The Home Design Mistake Couples Fight About Most',uvm:null,pod:'Creator',src:'email'},
-  {date:'2026-05-22',client:'Violet Witchel',outlet:'The Roam Report',headline:'Meal Prep Secret Taking Over the Internet',uvm:null,pod:'Creator',src:'email'},
-  {date:'2026-05-22',client:'Sophie Saint',outlet:'Supercar Blondie',headline:'Woman restoring Ferrari F40 sends message to women in cars',uvm:null,pod:'Creator',src:'email'},
-  {date:'2026-05-22',client:'Paige Lindgren',outlet:'Bustle',headline:"The Cycle Is A 'Period Drink' That Alleviates Monthly Symptoms",uvm:null,pod:'Creator',src:'email'},
-  {date:'2026-05-21',client:'Kat Velasco',outlet:'Nikki & Brie Show',headline:'Kat Velasco: We Have a Cowgirl Complex (Nashville Takeover)',uvm:230700,pod:'Entertainment',src:'tracker'},
-  {date:'2026-05-19',client:'Kat Velasco',outlet:'Swagger Magazine',headline:"Western Pop Artist to Release 'Shutting Down Midtown'",uvm:230700,pod:'Entertainment',src:'tracker',url:'https://swaggermagazine.com/music/kat-velasco-shutting-down-midtown/'},
-  {date:'2026-05-19',client:'Katie Austin',outlet:'Tamron Hall Show',headline:'TV Appearance',uvm:null,pod:'Athlete & Fitness',src:'tracker'},
-  {date:'2026-05-18',client:'Dolce Glow',outlet:'Oprah Daily',headline:'Oprah Sun Awards 2026',uvm:2801000,pod:'Brands',src:'tracker',url:'https://www.oprahdaily.com/life/a69978422/oprah-sun-awards-2026/'},
-  {date:'2026-05-18',client:'Dolce Glow',outlet:'ET',headline:'Cannes Film Festival Celebrity Sightings roundup',uvm:937288,pod:'Brands',src:'tracker',url:'https://www.etonline.com/gallery/cannes-film-festival-celebrity-sightings-225521'},
-  {date:'2026-05-15',client:'Donni Davy',outlet:"Harper's Bazaar India",headline:'Character Study: Donni Davy breaks down Euphoria beauty',uvm:193097,pod:'Beauty & Fashion',src:'tracker'},
-  {date:'2026-05-15',client:'Katie Austin',outlet:'Good Day New York',headline:'TV Appearance',uvm:null,pod:'Athlete & Fitness',src:'tracker'},
-  {date:'2026-05-15',client:'Donni Davy',outlet:'The Beauty Ed',headline:"Recreating Rosalía's Euphoria Makeup with Half Magic",uvm:null,pod:'Beauty & Fashion',src:'tracker'},
-  {date:'2026-05-12',client:'Kat Velasco',outlet:'Nikki & Brie Show',headline:'IG story promo clips',uvm:230700,pod:'Entertainment',src:'tracker'},
-  {date:'2026-05-12',client:'Katie Austin',outlet:'Athlete Tech News',headline:"Mother's Day: Female Fitness Execs Redefine Strength",uvm:204516,pod:'Athlete & Fitness',src:'tracker'},
-  {date:'2026-05-11',client:'Donni Davy',outlet:"Harper's Bazaar India Print",headline:"Euphoria's makeup as fan recreation phenomenon",uvm:193097,pod:'Beauty & Fashion',src:'tracker'},
-  {date:'2026-05-11',client:'Dolce Glow',outlet:'Cosmopolitan',headline:'Holy Grail Beauty Awards — Body Care 2026',uvm:21810000,pod:'Brands',src:'tracker',url:'https://www.cosmopolitan.com/style-beauty/beauty/a70940600/holy-grail-beauty-awards-bodycare-2026/'},
-  {date:'2026-05-11',client:'Spencer Pratt',outlet:'Dr. Phil (YouTube)',headline:'Spencer Pratt: His Mission to Save Los Angeles',uvm:null,pod:'Entertainment',src:'tracker'},
-  {date:'2026-05-10',client:'Spencer Pratt',outlet:'NBCLA YouTube',headline:'NewsConference: Spencer Pratt talks LA homelessness',uvm:396000,pod:'Entertainment',src:'tracker'},
-  {date:'2026-05-09',client:'Kat Velasco',outlet:'OutLoud! Culture',headline:'Exclusive Interview with Kat Velasco',uvm:6257,pod:'Entertainment',src:'tracker'},
-  {date:'2026-05-08',client:'Spencer Pratt',outlet:'All-In Podcast',headline:'Spencer Pratt on Fixing LA: Wildfires, Homelessness, Corruption',uvm:null,pod:'Entertainment',src:'tracker'},
-  {date:'2026-05-07',client:'Spencer Pratt',outlet:'Adam Carolla Vlog',headline:'Spencer Pratt Gives Adam Carolla a Tour of his RV',uvm:632000,pod:'Entertainment',src:'tracker'},
-  {date:'2026-05-05',client:'Olivia Ponton',outlet:'OK! Magazine',headline:'Hot Pics round-up',uvm:1584000,pod:'Brands',src:'tracker',url:'https://okmagazine.com/p/hot-pics-okmagazine-may-2026/'},
-  {date:'2026-05-05',client:'Donni Davy',outlet:'The Daily Beast',headline:'Introvert With 540K Followers Shares Secret to Facing Your Fears',uvm:7953172,pod:'Beauty & Fashion',src:'tracker',url:'https://www.thedailybeast.com/introvert-with-540k-followers-shares-secret-to-facing-your-fears'},
-  {date:'2026-05-05',client:'Spencer Pratt',outlet:'The Real Deal',headline:"Inside Spencer Pratt's Bid for Los Angeles Mayor",uvm:487643,pod:'Entertainment',src:'tracker',url:'https://therealdeal.com/2026/05/05/spencer-pratt-los-angeles-mayor/'},
-  {date:'2026-05-03',client:'Spencer Pratt',outlet:'NBC4/KVEA52',headline:'Live Mayoral Debate',uvm:null,pod:'Entertainment',src:'tracker'},
-  {date:'2026-05-01',client:'Spencer Pratt',outlet:'CBS LA / CBS News',headline:'LA Mayoral Race — Spencer Pratt attack ad coverage',uvm:1150000,pod:'Entertainment',src:'tracker',url:'https://www.cbsnews.com/losangeles/news/spencer-pratt-la-mayor/'},
-  {date:'2026-05-01',client:'Dolce Glow',outlet:'E! News',headline:'Self-Tan Like a Celeb with Isabel Alysa Tips',uvm:18600000,pod:'Brands',src:'tracker',url:'https://www.eonline.com/news/1431558/self-tan-like-a-celeb-with-isabel-alysa-tips-you-can-use-at-home'},
-  {date:'2026-05-01',client:'Katie Austin',outlet:'Create & Cultivate',headline:'Navigating Pregnancy While Being a Female Fitness Founder',uvm:15086,pod:'Athlete & Fitness',src:'tracker'},
-  {date:'2026-04-30',client:'Olivia Ponton',outlet:'People',headline:'Joe Burrow & Olivia Ponton date night',uvm:184400000,pod:'Brands',src:'tracker',url:'https://people.com/joe-burrow-olivia-ponton-walk-side-by-side-date-night-los-angeles-11962275'},
-  {date:'2026-04-16',client:'Cameron Rogers',outlet:'Mother.ly',headline:'Cameron Rogers interview',uvm:1717000,pod:'Brands',src:'tracker',url:'https://www.mother.ly/pregnancy/cameron-rogers-interview/'},
-  {date:'2026-04-14',client:'Donni Davy',outlet:'Forbes',headline:'Euphoria Makeup Artist Donni Davy Teases Season 3',uvm:58739060,pod:'Beauty & Fashion',src:'tracker',url:'https://www.forbes.com/sites/forbes-personal-shopper/2026/04/14/donni-davy-euphoria-season-3/'},
-  {date:'2026-04-13',client:'Odd Muse',outlet:'The New York Times',headline:'Off-the-rack wedding dress guide',uvm:676200000,pod:'Brands',src:'tracker',url:'https://www.nytimes.com/2026/04/11/fashion/weddings/off-the-rack-wedding-dress.html'},
-  {date:'2026-03-27',client:'Donni Davy',outlet:'Vogue',headline:'Playful Makeup Trend — Clean Girl Minimalism Rebuttal',uvm:10468798,pod:'Beauty & Fashion',src:'tracker',url:'https://www.vogue.com/article/playful-makeup-trend'},
-  {date:'2026-01-28',client:'Cameron Rogers',outlet:'People',headline:'Bruce Willis Dementia — podcast guest coverage',uvm:188300000,pod:'Brands',src:'tracker',url:'https://people.com/bruce-willis-wife-emma-says-he-doesn-t-know-he-has-dementia-exclusive-11893018'},
-  {date:'2026-01-14',client:'Cameron Rogers',outlet:'People',headline:'Mandy Moore Friendships Podcast — 25+ syndications',uvm:188300000,pod:'Brands',src:'tracker',url:'https://people.com/mandy-moore-talks-mourning-friendships-podcast-exclusive-11893018'},
-  {date:'2026-01-08',client:'Madison Woolley',outlet:'Forbes',headline:'Inside The World of Madison Woolley, Redefining Modern Bridal',uvm:93260000,pod:'Brands',src:'tracker',url:'https://www.forbes.com/sites/forbes-personal-shopper/2026/01/08/madison-woolley-modern-bridal/'},
+const HITS = [
+  { name: 'Spencer Pratt', count: 16, pod: 'entertainment' },
+  { name: 'Katie Austin', count: 8, pod: 'athlete' },
+  { name: 'Donni Davy', count: 4, pod: 'bf' },
+  { name: 'Kai Stone', count: 4, pod: 'creator' },
+  { name: 'Paige Lindgren', count: 3, pod: 'creator' },
+  { name: 'Violet Witchel', count: 3, pod: 'creator' },
+  { name: 'Brittny Button', count: 2, pod: 'creator' },
+  { name: 'Anita Yokota', count: 2, pod: 'creator' },
+  { name: 'Sophie Saint Marjan', count: 1, pod: 'creator' },
 ];
 
-const fmtU=n=>{if(!n)return'—';if(n>=1e9)return(n/1e9).toFixed(1)+'B';if(n>=1e6)return(n/1e6).toFixed(1)+'M';if(n>=1e3)return(n/1e3).toFixed(0)+'K';return n.toLocaleString();};
-const fmtM=n=>n?'$'+n.toLocaleString():'—';
+const OPEN_OPPS = [
+  {
+    pod: 'creator', color: '#9b72cf', ae: 'Jenna, Sophie & Hannah',
+    sections: [
+      { title: 'Actively Speaking With', items: [
+        ['Violet Witchel', 'NY Times, Conde Nast, NY pop-up launch'],
+        ['Paige Lindgren', 'The Knot, MOST Mag, Gift Guides'],
+        ['G&B Digital', 'Digiday, NY Times Ella Quittner'],
+        ['Jamie Milne', 'Father\'s Day, mocktails/cocktails pitches'],
+        ['Brittny Button', 'Good Day NY, Stylecaster, Dear Media'],
+        ['Sophie Saint', 'Realtor.com, Authority Mag'],
+      ]},
+    ]
+  },
+  {
+    pod: 'entertainment', color: '#e09050', ae: 'Julia Matina',
+    sections: [
+      { title: 'Active Coverage', items: [
+        ['Spencer Pratt', 'NBCLA ongoing, CBS ongoing — LA Mayor campaign'],
+        ['Spill Sesh', 'Mess Magnets Pod scheduled, My Fame Explained'],
+        ['Gia Giudice', 'Reality-focused outlets outreach'],
+        ['QUICI Media', 'General outreach ongoing'],
+      ]},
+    ]
+  },
+  {
+    pod: 'bf', color: '#e07090', ae: 'Alexis Papadopoulos',
+    sections: [
+      { title: 'Actively Speaking With', items: [
+        ['Miranda McKeon', 'Byrdie, Forbes, Parade, Bustle — Women\'s Health Month'],
+        ['Amanda Frances', 'Forbes, Viall Files Pod, NowThis, Axios'],
+        ['Allie Eklund', 'Fashion Mag, The Squeeze, Conde Nast'],
+        ['Melinda Melrose', 'WWD, Good Day LA, Glamour SA'],
+        ['Terry Dubrow', 'Pre-Game Pod, TV Guide, RealityBlurb'],
+        ['Susan Holmes McKagan', 'Book launch 5/28: Velvet Rose Paperback'],
+        ['UpDating', 'Seeking guest / concept ideas'],
+      ]},
+    ]
+  },
+  {
+    pod: 'athlete', color: '#4db38a', ae: 'Jackson Goldman',
+    sections: [
+      { title: 'Open Client Opps', items: [
+        ['Katie Austin', 'PEOPLE in-convo, Baby Chicks, Hot Smart Rich, Everygirl Pod, Good Housekeeping'],
+        ['Aditi Shah', 'WSJ Leadership Institute, She Media, Shoe Therapy, Hard Knocks Women'],
+        ['Chase DeMoor', 'Swagger, Give Me Sport, Boxing24, The Sun'],
+        ['Millennial Ent.', 'Digiday, Forbes (in convo), Cannes speaking opps'],
+        ['Carson Roney', 'TMRW Mag, Essentially Sports, Harvard Women In Business'],
+        ['Kail Lowry', 'InTouch, People, Off The Vine, OK Magazine'],
+        ['TJ Palma', "Barstool's It Girl, Trading Secrets Pod, NetInfluencer"],
+        ['Modeliste', 'Stassi, Claire Holt, Tana — in convo for covers'],
+      ]},
+    ]
+  },
+  {
+    pod: 'brands', color: '#5599dd', ae: 'Anne Leopard + Lindsey LeDoux',
+    sections: [
+      { title: 'Pitching / Speaking With', items: [
+        ['Dolce Glow', 'NYLON 100 editor beauty, People, Cannes Film Festival'],
+        ['G&B Digital', 'California Post, Biz Journals'],
+        ['Bell Boy', 'EMBARGO 6/1 — Caelynn Bell fashion launch'],
+        ['Auri Nutrition', 'The Supplement Brand pitch — data focus'],
+        ['Sunnee BAE', 'Alabama/Texas campus activation, Memorial Day'],
+        ['RedHanded', 'True crime women audience pitch — WSJ, Forbes'],
+        ['Cameron Rogers', 'Dr. Becky podcast follow-up, broadcast pitching'],
+        ['Odd Muse', 'WWD exclusive, spring dresses roundups'],
+        ['Olivia Ponton', 'Cannes GRWM coverage, Princess Movie media, Cultured Mag'],
+      ]},
+    ]
+  },
+];
 
-let period='month', tab='overview', pod='All';
+// ===== STATE =====
+let activePod = 'all';
+let activeTime = 'month';
 
-function getHits(){
-  const cut=period==='week'?'2026-05-19':period==='month'?'2026-05-01':'2000-01-01';
-  return HITS.filter(h=>h.date>=cut&&(pod==='All'||h.pod===pod));
-}
-function periodLabel(){return period==='week'?'May 19–26':period==='month'?'May 2026':'All Time';}
+// ===== POD ROSTER DATA =====
+const POD_ROSTERS = {
+  creator: CLIENTS.filter(c => c.pod === 'creator' && c.status !== 'departing'),
+  bf: CLIENTS.filter(c => c.pod === 'bf' && c.status !== 'departing'),
+  athlete: CLIENTS.filter(c => c.pod === 'athlete' && c.status !== 'departing'),
+  entertainment: CLIENTS.filter(c => c.pod === 'entertainment' && c.status !== 'departing'),
+  brands: CLIENTS.filter(c => c.pod === 'brands' && c.status !== 'departing'),
+};
 
-function setPeriod(p){period=p;document.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('active'));event.target.classList.add('active');render();}
-function setTab(t){tab=t;document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));event.target.classList.add('active');render();}
-function setPod(p){pod=p;render();}
+// ===== INIT =====
+window.onload = function() {
+  renderKPIs();
+  renderHitList();
+  renderCoverageFeed();
+  renderOpps();
+  renderCoverageTable();
+  renderClientTable();
+  renderClientCounts();
+};
 
-function renderPodBar(){
-  const pods=['All','Entertainment','Beauty & Fashion','Athlete & Fitness','Creator','Brands'];
-  document.getElementById('podBar').innerHTML=
-    pods.map(p=>{const col=pc(p),active=pod===p;return`<button class="pod-btn" onclick="setPod('${p}')" style="background:${active?col+'22':'none'};border-color:${active?col:'#1E2630'};color:${active?col:'#4A5568'}">${p}</button>`;}).join('')+
-    `<span style="margin-left:auto;font-size:9px;color:#4A5568">Showing: ${periodLabel()}${pod!=='All'?' · '+pod:''}</span>`;
-}
-
-function renderKPIs(){
-  const hits=getHits();
-  const isBrands=pod==='Brands', isTalent=pod!=='All'&&pod!=='Brands';
-  const tActive=TALENT.filter(c=>c.status==='Active'&&!c.type&&(pod==='All'||isBrands||c.pod===pod));
-  const tDep=TALENT.filter(c=>c.status==='Departing'&&!c.type&&(pod==='All'||isBrands||c.pod===pod));
-  const bActive=BRANDS.filter(c=>c.status==='Active');
-  const bDep=BRANDS.filter(c=>c.status==='Departing');
-  const uvm=hits.reduce((s,h)=>s+(h.uvm||0),0);
-  const tRev=tActive.reduce((s,c)=>s+c.retainer,0);
-  const bRev=bActive.reduce((s,c)=>s+(c.retainer||0),0);
-
-  const kpis=[
-    {label:isTalent?pod+' — Active':isBrands?'Brands — Active':'Active Talent Clients',
-     value:isBrands?bActive.length:tActive.length,
-     sub:isBrands?'+'+bDep.length+' departing':isTalent?'+'+tDep.length+' departing':'+'+TALENT.filter(c=>c.status==='Departing').length+' departing soon',
-     color:isBrands?C.blue:pc(pod)||C.gold},
-    {label:isTalent?pod+' — Departing':isBrands?'Brands — Departing':'Active Brands Clients',
-     value:isTalent?tDep.length:isBrands?bDep.length:bActive.length,
-     sub:isTalent?'leaving within 60 days':isBrands?'leaving within 60 days':'+'+bDep.length+' departing',
-     color:isTalent?C.red:isBrands?C.red:C.blue},
-    {label:'Hits — '+periodLabel(),value:hits.length,sub:pod==='All'?'all pods':pod,color:C.green},
-    {label:'UVM — '+periodLabel(),value:Math.round(uvm/1e6),suffix:'M',sub:'confirmed UVM only',color:C.purple},
-    {label:isTalent?pod+' Revenue':isBrands?'Brands Revenue':'Combined Monthly Rev',
-     value:Math.round((isBrands?bRev:isTalent?tRev:tRev+bRev)/1000),suffix:'K',
-     sub:'active clients / month',color:C.orange},
-  ];
-  document.getElementById('kpis').innerHTML=kpis.map(k=>`
-    <div class="kpi"><div class="kpi-bar" style="background:${k.color}"></div>
-      <div class="kpi-label">${k.label}</div>
-      <div class="kpi-value serif">${typeof k.value==='number'?k.value.toLocaleString():k.value}${k.suffix||''}</div>
-      <div class="kpi-sub">${k.sub}</div>
-    </div>`).join('');
-}
-
-function renderRoster(){
-  const el=document.getElementById('rosterStrip');
-  if(pod==='All'){el.innerHTML='';return;}
-  const list=(pod==='Brands'?BRANDS:TALENT.filter(c=>c.pod===pod)).filter(c=>c.status!=='Departed');
-  const pills=list.map(c=>{
-    const isSpecial=c.type==='one-time'||c.type==='pro-bono';
-    const isDep=c.status==='Departing';
-    const borderCol=isSpecial?C.teal:isDep?C.red:(pod==='Brands'?C.blue:pc(pod));
-    const dotCol=borderCol;
-    const nameCol=isSpecial?C.teal:isDep?C.red:C.text;
-    const tag=c.type==='one-time'?'ONE-TIME':c.type==='pro-bono'?'PRO BONO':isDep?c.note:null;
-    const retainer=c.retainer?fmtM(c.retainer):c.type==='pro-bono'?'No fee':'—';
-    return `<div class="pill" style="border-color:${borderCol}22">
-      <span class="pill-dot" style="background:${dotCol}"></span>
-      <span class="pill-name" style="color:${nameCol}">${c.name}</span>
-      ${tag?`<span class="pill-tag" style="color:${borderCol}">${tag}</span>`:''}
-      <span class="pill-retainer">${retainer}</span>
-    </div>`;
-  }).join('');
-  el.innerHTML=`<div class="roster-strip"><div class="roster-label">${pod} Roster</div><div class="roster-pills">${pills}</div></div>`;
-}
-
-function renderOverview(){
-  const hits=getHits();
-  const cHits={},cUVM={};
-  hits.forEach(h=>{cHits[h.client]=(cHits[h.client]||0)+1;cUVM[h.client]=(cUVM[h.client]||0)+(h.uvm||0);});
-  const sorted=Object.entries(cHits).sort((a,b)=>b[1]-a[1]).slice(0,12);
-  const lb=sorted.length?sorted.map(([name,cnt],i)=>{
-    const p=HITS.find(h=>h.client===name)?.pod||'Brands';
-    const col=pc(p);
-    return`<div class="hit-row" style="border-left:3px solid ${col}">
-      <span style="font-size:11px;color:#4A5568;width:16px;text-align:right">${i+1}</span>
-      <div style="flex:1"><div class="serif" style="font-size:12px;color:#F5EDD6">${name}</div>
-        <div style="font-size:9px;color:#4A5568">${p}${cUVM[name]?' · UVM: '+fmtU(cUVM[name]):''}</div></div>
-      <div style="text-align:right"><div class="serif" style="font-size:18px;color:${col}">${cnt}</div><div style="font-size:9px;color:#4A5568">hits</div></div>
-    </div>`;
-  }).join(''):`<div class="no-data">No confirmed hits for this period.</div>`;
-
-  const feed=hits.slice(0,22).map(h=>`
-    <div class="feed-item" style="border-left:3px solid ${pc(h.pod)}">
-      <div class="feed-top"><span class="feed-outlet" style="color:${pc(h.pod)}">${h.outlet}</span>
-        <div class="feed-meta">${h.src==='email'?'<span class="email-tag">email</span>':''}<span class="feed-date">${h.date.slice(5).replace('-','/')}</span></div></div>
-      <div class="feed-headline">${h.url?`<a href="${h.url}" target="_blank" style="color:#D4CDBE;text-decoration:none;border-bottom:1px solid rgba(201,168,76,0.3);padding-bottom:1px">${h.headline}</a>`:h.headline}</div>
-      <div class="feed-bottom"><span class="feed-client">${h.client}</span>${h.uvm?`<span class="uvm">${fmtU(h.uvm)}</span>`:'<span style="font-size:9px;color:#4A5568">—</span>'}</div>
-    </div>`).join('');
-
-  document.getElementById('tabContent').innerHTML=`
-    <div class="two-col">
-      <div class="card"><div class="card-label">From Drive Trackers</div><div class="card-title serif">Hit Leaderboard — ${periodLabel()}</div>${lb}</div>
-      <div class="card"><div class="card-label">Coverage Feed</div><div class="card-title serif">Most Recent</div><div class="feed-scroll">${feed}</div></div>
-    </div>`;
+function podColor(pod) {
+  return PODS[pod]?.color || '#888';
 }
 
-function renderCoverage(){
-  const hits=getHits();
-  const items=hits.map(h=>`
-    <div style="padding:11px 13px;background:#0B0E14;border-radius:6px;border-left:3px solid ${pc(h.pod)}">
-      <div class="feed-top"><span class="feed-outlet" style="color:${pc(h.pod)}">${h.outlet}</span>
-        <div class="feed-meta">${h.src==='email'?'<span class="email-tag">email</span>':''}<span class="feed-date">${h.date.slice(5).replace('-','/')}</span></div></div>
-      <div class="feed-headline" style="margin-bottom:5px">${h.url?`<a href="${h.url}" target="_blank" style="color:#D4CDBE;text-decoration:none;border-bottom:1px solid rgba(201,168,76,0.3);padding-bottom:1px">${h.headline}</a>`:h.headline}</div>
-      <div class="feed-bottom"><span class="feed-client">${h.client} · ${h.pod}</span>${h.uvm?`<span class="uvm">${fmtU(h.uvm)}</span>`:'<span style="font-size:9px;color:#4A5568">—</span>'}</div>
-    </div>`).join('');
-  document.getElementById('tabContent').innerHTML=`
-    <div class="card"><div class="card-title serif" style="margin-bottom:16px">All Coverage — ${periodLabel()} · ${hits.length} hits</div>
-      <div class="cov-grid">${items||'<div class="no-data">No hits for this period.</div>'}</div></div>`;
+function fmtMoney(n) {
+  if (!n) return '—';
+  return '$' + n.toLocaleString();
 }
 
-function renderClients(){
-  const hits=getHits();
-  const cHits={};hits.forEach(h=>{cHits[h.client]=(cHits[h.client]||0)+1;});
-  const pods=['Entertainment','Beauty & Fashion','Athlete & Fitness','Creator'];
-  const filtPods=pod==='All'||pod==='Brands'?pods:pods.filter(p=>p===pod);
+// ===== KPIs =====
+function renderKPIs() {
+  const podData = {
+    all: { rev: 223745, net: 43267, margin: '19.3%', clients: CLIENTS.filter(c => c.status === 'active' || c.status === 'pb').length },
+    creator: { rev: 27500, net: 11970, margin: '43.5%', clients: POD_ROSTERS.creator.length },
+    bf: { rev: 23000, net: 7054, margin: '30.7%', clients: POD_ROSTERS.bf.length },
+    athlete: { rev: 34000, net: 23782, margin: '70.0%', clients: POD_ROSTERS.athlete.length },
+    entertainment: { rev: 31000, net: 19074, margin: '61.5%', clients: POD_ROSTERS.entertainment.length },
+    brands: { rev: 76075, net: null, margin: '60.3%', clients: POD_ROSTERS.brands.length },
+  };
+  const d = podData[activePod] || podData.all;
+  document.getElementById('kpi-row').innerHTML = `
+    <div class="kpi-card"><div class="kpi-label">Monthly Revenue</div><div class="kpi-value accent">${fmtMoney(d.rev)}</div><div class="kpi-sub">${activePod === 'all' ? 'All pods combined' : PODS[activePod]?.label + ' pod'}</div></div>
+    <div class="kpi-card"><div class="kpi-label">Net Profit</div><div class="kpi-value green">${d.net ? fmtMoney(d.net) : '—'}</div><div class="kpi-sub">After costs</div></div>
+    <div class="kpi-card"><div class="kpi-label">Margin</div><div class="kpi-value green">${d.margin}</div><div class="kpi-sub">Gross pod margin</div></div>
+    <div class="kpi-card"><div class="kpi-label">Active Clients</div><div class="kpi-value" style="color:var(--text)">${d.clients}</div><div class="kpi-sub">${activePod === 'all' ? 'Across all pods' : PODS[activePod]?.label}</div></div>
+    ${activePod === 'all' ? `<div class="kpi-card"><div class="kpi-label">Departing</div><div class="kpi-value" style="color:var(--red)">${CLIENTS.filter(c=>c.status==='departing').length}</div><div class="kpi-sub">Upcoming offboarding</div></div>` : ''}
+    ${activePod === 'all' ? `<div class="kpi-card"><div class="kpi-label">Commission Paid</div><div class="kpi-value yellow">$4,675</div><div class="kpi-sub">Monthly to external</div></div>` : ''}
+  `;
+}
 
-  const talentHTML=filtPods.map(p=>{
-    const col=pc(p);
-    const rows=TALENT.filter(c=>c.pod===p).map(c=>{
-      const isSpecial=c.type==='one-time'||c.type==='pro-bono';
-      const borderCol=isSpecial?C.teal:c.status==='Active'?col:c.status==='Departing'?C.red:C.border;
-      const tag=c.type==='one-time'?'ONE-TIME':c.type==='pro-bono'?'PRO BONO':null;
-      const noteCol=isSpecial?C.teal:C.red;
-      return`<div class="client-row" style="opacity:${c.status==='Departed'?0.3:1};border-left:2px solid ${borderCol}">
-        <div>
-          <span style="font-size:11px;color:${c.status==='Departed'?C.muted:C.text}">${c.name}</span>
-          ${tag?`<span class="special-tag">${tag}</span>`:''}
-          ${c.note&&!isSpecial?`<span style="font-size:9px;color:${noteCol};margin-left:8px">${c.note}</span>`:''}
-          ${isSpecial?`<span style="font-size:9px;color:#4A5568;margin-left:6px">${c.note}</span>`:''}
-        </div>
-        <div style="display:flex;align-items:center;gap:10px">
-          ${cHits[c.name]?`<span class="serif" style="font-size:11px;color:${col}">${cHits[c.name]} hits</span>`:''}
-          <span style="font-size:9px;color:#4A5568">${c.retainer?fmtM(c.retainer):c.type==='pro-bono'?'No fee':c.note||'—'}</span>
-        </div>
-      </div>`;
-    }).join('');
-    return`<div class="client-pod-section"><div class="client-pod-header" style="color:${col}"><span style="width:6px;height:6px;background:${col};border-radius:50%;display:inline-block"></span>${p}</div>${rows}</div>`;
-  }).join('');
+// ===== HIT LIST =====
+function renderHitList() {
+  const filtered = activePod === 'all' ? HITS : HITS.filter(h => h.pod === activePod);
+  document.getElementById('hit-list').innerHTML = filtered.length ? filtered.map((h, i) => `
+    <div class="hit-item">
+      <span class="hit-rank">#${i+1}</span>
+      <span class="hit-pod" style="background:${podColor(h.pod)}"></span>
+      <span class="hit-name">${h.name}</span>
+      <span class="hit-count">${h.count} hits</span>
+    </div>
+  `).join('') : '<div style="padding:20px 16px;color:var(--muted);font-size:12px;">No data for this pod filter.</div>';
+}
 
-  const bActive=BRANDS.filter(c=>c.status==='Active').length;
-  const bDep=BRANDS.filter(c=>c.status==='Departing').length;
-  const brandsHTML=BRANDS.map(c=>`
-    <div class="client-row" style="opacity:${c.status==='Departed'?0.3:1};border-left:2px solid ${c.status==='Active'?C.blue:c.status==='Departing'?C.red:C.border}">
-      <div><span style="font-size:11px;color:${c.status==='Departed'?C.muted:C.text}">${c.name}</span>
-        ${c.note?`<span style="font-size:9px;color:${C.red};margin-left:8px">${c.note}</span>`:''}</div>
-      <div style="display:flex;align-items:center;gap:10px">
-        ${cHits[c.name]?`<span class="serif" style="font-size:11px;color:${C.blue}">${cHits[c.name]} hits</span>`:''}
-        <span style="font-size:9px;color:#4A5568">${c.retainer?fmtM(c.retainer):'—'}</span>
+// ===== COVERAGE FEED =====
+function renderCoverageFeed() {
+  const filtered = activePod === 'all' ? COVERAGE : COVERAGE.filter(c => c.pod === activePod);
+  document.getElementById('coverage-feed').innerHTML = filtered.slice(0, 20).map(c => `
+    <div class="feed-item">
+      <span class="feed-date">${c.date}</span>
+      <div class="feed-headline">
+        ${c.url ? `<a href="${c.url}" target="_blank">${c.headline}</a>` : c.headline}
+        <div class="feed-outlet" style="margin-top:2px;">${c.outlet}</div>
       </div>
-    </div>`).join('');
-
-  const tActive=TALENT.filter(c=>c.status==='Active'&&!c.type).length;
-  const tDep=TALENT.filter(c=>c.status==='Departing').length;
-  document.getElementById('tabContent').innerHTML=`
-    <div class="two-col">
-      <div class="card"><div class="card-label">Talent Division</div><div class="card-title serif">${tActive} Active · ${tDep} Departing</div>${talentHTML}</div>
-      <div class="card"><div class="card-label">Brands Division</div><div class="card-title serif">${bActive} Active · ${bDep} Departing</div>${brandsHTML}</div>
-    </div>`;
+      <span style="font-size:11px;color:${podColor(c.pod)}">${c.client}</span>
+      <span class="feed-type">${c.type}</span>
+    </div>
+  `).join('');
 }
 
-function renderRevenue(){
-  const pods=[{pod:'Entertainment',rev:33500,pay:14822,n:6},{pod:'Athlete & Fitness',rev:34000,pay:13322,n:9},{pod:'Beauty & Fashion',rev:28000,pay:15947,n:5},{pod:'Creator',rev:27500,pay:15530,n:6}];
-  const podHTML=pods.map(r=>{
-    const col=pc(r.pod),pct=Math.round((r.rev-r.pay)/r.rev*100);
-    return`<div class="rev-pod">
-      <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span class="serif" style="font-size:12px;color:${col}">${r.pod}</span><span style="font-size:9px;color:#4A5568">${r.n} clients</span></div>
-      <div class="rev-3col">
-        <div><div style="font-size:9px;color:#4A5568">Revenue</div><div class="serif" style="font-size:14px;color:${C.green}">${fmtM(r.rev)}</div></div>
-        <div><div style="font-size:9px;color:#4A5568">Payroll</div><div class="serif" style="font-size:14px;color:${C.red}">${fmtM(r.pay)}</div></div>
-        <div><div style="font-size:9px;color:#4A5568">Net</div><div class="serif" style="font-size:14px;color:#F5EDD6">${fmtM(r.rev-r.pay)}</div></div>
+// ===== OPPS =====
+function renderOpps() {
+  const filtered = activePod === 'all' ? OPEN_OPPS : OPEN_OPPS.filter(o => o.pod === activePod);
+  document.getElementById('opps-grid').innerHTML = filtered.map(o => `
+    <div class="opp-card">
+      <div class="opp-header">
+        <span class="opp-pod-label" style="color:${o.color}">${PODS[o.pod]?.label}</span>
+        <span class="opp-ae">${o.ae}</span>
       </div>
-      <div class="rev-bar-bg"><div class="rev-bar-fill" style="width:${pct}%;background:${col}"></div></div>
-      <div style="font-size:9px;color:#4A5568;margin-top:3px">${pct}% margin</div>
-    </div>`;
+      <div class="opp-body">
+        ${o.sections.map(s => `
+          <div class="opp-section-title">${s.title}</div>
+          ${s.items.map(([client, detail]) => `
+            <div class="opp-item"><span class="opp-client">${client}</span><span class="opp-detail">${detail}</span></div>
+          `).join('')}
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===== COVERAGE TABLE =====
+function renderCoverageTable() {
+  const filtered = activePod === 'all' ? COVERAGE : COVERAGE.filter(c => c.pod === activePod);
+  document.getElementById('coverage-tbody').innerHTML = filtered.map(c => `
+    <tr>
+      <td style="color:var(--muted);font-family:'DM Mono',monospace;font-size:11px;">${c.date}</td>
+      <td style="font-weight:500;color:${podColor(c.pod)}">${c.client}</td>
+      <td style="color:var(--muted);font-size:11px;">${c.outlet}</td>
+      <td>${c.url ? `<a href="${c.url}" target="_blank">${c.headline}</a>` : c.headline}</td>
+      <td style="font-size:11px;color:var(--muted)">${c.type}</td>
+      <td><span class="pod-dot" style="background:${podColor(c.pod)}"></span>${PODS[c.pod]?.label}</td>
+    </tr>
+  `).join('');
+}
+
+// ===== CLIENT TABLE =====
+function renderClientTable() {
+  let filtered = activePod === 'all' ? CLIENTS : CLIENTS.filter(c => c.pod === activePod);
+  const active = filtered.filter(c => c.status === 'active' || c.status === 'pb');
+  const departing = filtered.filter(c => c.status === 'departing');
+  const sorted = [...active, ...departing];
+
+  document.getElementById('client-count-label').textContent = `${active.length} active · ${departing.length} departing`;
+
+  document.getElementById('client-tbody').innerHTML = sorted.map(c => {
+    const statusMap = { active: '<span class="status-badge status-active">Active</span>', departing: '<span class="status-badge status-departing">Departing</span>', pb: '<span class="status-badge status-pb">Pro Bono</span>' };
+    const specialFlags = c.name.includes('UpDating') ? '<span class="flag-tag">UpDating</span>' : '';
+    return `<tr>
+      <td style="font-weight:500">${c.name}${specialFlags}</td>
+      <td><span class="pod-dot" style="background:${podColor(c.pod)}"></span>${PODS[c.pod]?.label}</td>
+      <td class="retainer">${c.retainer > 0 ? fmtMoney(c.retainer) : c.status === 'pb' ? 'Pro Bono' : '—'}</td>
+      <td>${statusMap[c.status]}</td>
+      <td style="color:var(--muted);font-size:11px">${c.contract}</td>
+      <td style="color:var(--muted);font-size:11px">${c.notes}</td>
+    </tr>`;
   }).join('');
-  const ovr=[
-    {l:'Total Monthly Revenue',v:'$223,745',c:C.green},{l:'Talent Division',v:'$144,250',c:C.gold},
-    {l:'Brands Division',v:'$76,075',c:C.blue},{l:'Socials Division',v:'$3,420',c:C.teal},
-    {l:'Total Payroll / Month',v:'$127,418',c:C.red},{l:'Other OpEx / Month',v:'$73,000',c:C.orange},
-    {l:'Net Profit',v:'$36,547',c:C.green},{l:'Margin',v:'16.3%',c:'#F5EDD6'},
-  ].map(r=>`<div class="rev-row"><span style="font-size:11px;color:#4A5568">${r.l}</span><span class="serif" style="font-size:13px;color:${r.c}">${r.v}</span></div>`).join('');
-  document.getElementById('tabContent').innerHTML=`
-    <div class="two-col">
-      <div class="card"><div class="card-title serif" style="margin-bottom:16px">Talent Revenue by Pod</div>${podHTML}</div>
-      <div class="card"><div class="card-title serif" style="margin-bottom:16px">Company Overview</div>${ovr}
-        <div class="goal-box"><div style="font-size:9px;color:#4A5568;margin-bottom:4px">Revenue needed for 45% margin goal</div>
-          <div class="serif" style="font-size:18px;color:${C.gold}">~$364,000 / month</div>
-          <div style="font-size:9px;color:#4A5568;margin-top:3px">Currently at $223,745 — 61% of the way there</div>
-        </div>
+}
+
+// ===== CLIENT COUNTS =====
+function renderClientCounts() {
+  const active = CLIENTS.filter(c => c.status === 'active' || c.status === 'pb');
+  const pods = ['creator', 'bf', 'athlete', 'entertainment', 'brands'];
+  document.getElementById('client-counts-grid').innerHTML = `
+    <div class="section-card">
+      <div class="card-header"><span class="card-title">Active Client Summary</span></div>
+      <table class="rev-table">
+        <thead><tr><th>Pod</th><th>Active</th><th>Departing</th><th>Monthly Rev</th></tr></thead>
+        <tbody>
+          ${pods.map(p => {
+            const a = CLIENTS.filter(c => c.pod === p && (c.status === 'active' || c.status === 'pb')).length;
+            const d = CLIENTS.filter(c => c.pod === p && c.status === 'departing').length;
+            const rev = CLIENTS.filter(c => c.pod === p && (c.status === 'active' || c.status === 'pb')).reduce((s, c) => s + c.retainer, 0);
+            return `<tr><td><span class="pod-dot" style="background:${podColor(p)}"></span>${PODS[p].label}</td><td>${a}</td><td style="color:${d>0?'var(--red)':'var(--muted)'}">${d || '—'}</td><td class="money">${rev > 0 ? fmtMoney(rev) : '—'}</td></tr>`;
+          }).join('')}
+          <tr class="total"><td>TOTAL</td><td>${active.length}</td><td style="color:var(--red)">${CLIENTS.filter(c=>c.status==='departing').length}</td><td class="money" style="color:var(--accent)">$223,745</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="section-card">
+      <div class="card-header"><span class="card-title">Special Flags</span></div>
+      <div style="padding:12px 16px;">
+        <div class="opp-section-title">One-Time Fees Active</div>
+        <div class="opp-item"><span class="opp-client">UpDating</span><span class="opp-detail">Talent booking fee $5,000 (Susan Holmes McKagan) — 50% upfront / 50% on completion</span></div>
+        <div class="opp-section-title" style="margin-top:12px">Pro Bono</div>
+        <div class="opp-item"><span class="opp-client">Danielle Cohn</span><span class="opp-detail">PB — started 4/20/26</span></div>
+        <div class="opp-item"><span class="opp-client">Modeliste Mag</span><span class="opp-detail">PB — $7,500/cover secured</span></div>
+        <div class="opp-section-title" style="margin-top:12px">New This Month</div>
+        <div class="opp-item"><span class="opp-client">Asante Madrigal</span><span class="opp-detail">New sign — started 5/26/26 · $5,000 · 3 then MTM</span></div>
       </div>
-    </div>`;
+    </div>
+  `;
 }
 
-function render(){
-  renderPodBar();renderKPIs();renderRoster();
-  if(tab==='overview')renderOverview();
-  else if(tab==='coverage')renderCoverage();
-  else if(tab==='clients')renderClients();
-  else renderRevenue();
+// ===== CONTROLS =====
+function setTab(name, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
 }
 
-setInterval(()=>{
-  const n=new Date();
-  document.getElementById('clock').textContent=n.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-  document.getElementById('dateLbl').textContent=n.toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'});
-},1000);
-document.getElementById('clock').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-document.getElementById('dateLbl').textContent=new Date().toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'});
-render();
+function setTime(t, el) {
+  activeTime = t;
+  document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function setPod(pod, el) {
+  activePod = pod;
+  document.querySelectorAll('.pod-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+
+  // Roster strip
+  const strip = document.getElementById('rosterStrip');
+  if (pod !== 'all') {
+    const clients = POD_ROSTERS[pod] || [];
+    strip.innerHTML = clients.map(c => `<div class="roster-chip">${c.name}<span>${fmtMoney(c.retainer)}</span></div>`).join('');
+    strip.classList.add('show');
+  } else {
+    strip.classList.remove('show');
+  }
+
+  renderKPIs();
+  renderHitList();
+  renderCoverageFeed();
+  renderOpps();
+  renderCoverageTable();
+  renderClientTable();
+}
 </script>
 </body>
 </html>
